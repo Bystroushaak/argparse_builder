@@ -14,14 +14,56 @@
     This website helps you to quickly create complex <code>argparse</code> interfaces.
 </p>
 
+<h2>ArgumentParser objects</h2>
+
 <fieldset>
-    <legend>Description of your program</legend>
+    <legend>prog</legend>
 
-    <p>This text will be shown at first lines of help. It shouldn't be too long - don't mistake this with <code>man</code> page.</p>
+    <p>The name of the program. Default <code>sys.argv[0]</code>.</p>
 
-    <textarea id="description_field"></textarea>
+    <input type="text" id="ArgumentParser_prog">
 </fieldset>
 
+<fieldset>
+    <legend>usage</legend>
+
+    <p>The string describing the program usage (default: generated from arguments added to parser).</p>
+
+    <input type="text" id="ArgumentParser_usage">
+</fieldset>
+
+<fieldset>
+    <legend>description</legend>
+
+    <p>Text to display before the argument help (default: <code>None</code>). It shouldn't be too long - don't mistake this with <code>man</code> page.</p>
+
+    <textarea id="ArgumentParser_description"></textarea>
+</fieldset>
+
+<fieldset>
+    <legend>epilog</legend>
+
+    <p>Text to display after the argument help (default: <code>None</code>).</p>
+
+    <textarea id="ArgumentParser_epilog"></textarea>
+</fieldset>
+
+<fieldset>
+    <legend>add_help</legend>
+
+    <p>
+        <input type="checkbox" checked="checked" id="ArgumentParser_epilog">
+        Add a <code>-h</code>/<code>–help</code> option to the parser.
+    </p>
+</fieldset>
+
+<h2>Arguments</h2>
+
+<p id="plus_button">+</p>
+
+<h2>Output</h2>
+
+<textarea id="output"></textarea>
 
 </body>
 </HTML>

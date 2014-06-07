@@ -26,11 +26,11 @@ h1 a:hover, h2 a:hover, h3 a:hover {
     text-decoration: underline;
 }
 
-h2, h3 {
+/*h2, h3 {
     padding-bottom: -5px;
     margin-bottom: -5px;
     padding-top: 5px;
-}
+}*/
 
 .perex {
     font-style: italic;
@@ -44,6 +44,19 @@ fieldset legend {
     font-weight: bold;
 }
 
-#description_field {
+fieldset textarea {
     width: 100%;
+}
+
+fieldset input {
+    width: 100%;
+}
+
+fieldset p input {
+    width: auto;
+}
+
+#plus_button {
+    font-size: 3em;
+    margin: 0;
 }
