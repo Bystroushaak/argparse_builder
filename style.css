@@ -1,0 +1,49 @@
+html{
+    background-color: #CCCCCC;
+}
+
+body {
+    display: block;
+    margin: 0 auto;
+
+    margin-top: 1em;
+    margin-bottom: 1em;
+
+    width: 900px;
+    padding: 1em;
+    background-color: #FFFFFF;
+    
+    border: 1px solid black;
+    text-align: justify;
+}
+
+h1 a, h2 a, h3 a {
+    text-decoration: none;
+    color: black;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover {
+    text-decoration: underline;
+}
+
+h2, h3 {
+    padding-bottom: -5px;
+    margin-bottom: -5px;
+    padding-top: 5px;
+}
+
+.perex {
+    font-style: italic;
+}
+
+fieldset p {
+    font-style: italic;
+}
+
+fieldset legend {
+    font-weight: bold;
+}
+
+#description_field {
+    width: 100%;
+}
