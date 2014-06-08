@@ -18,39 +18,28 @@
 
 <fieldset>
     <legend>prog</legend>
-
-    <p>The name of the program. Default <code>sys.argv[0]</code>.</p>
-
-    <input type="text" id="ArgumentParser_prog">
+    <input type="text" id="ArgumentParser_prog" value="The name of the program. Default sys.argv[0].">
 </fieldset>
 
 <fieldset>
     <legend>usage</legend>
-
-    <p>The string describing the program usage (default: generated from arguments added to parser).</p>
-
-    <input type="text" id="ArgumentParser_usage">
+    <input type="text" id="ArgumentParser_usage" value="The string describing the program usage (default: generated from arguments added to parser).">
 </fieldset>
 
 <fieldset>
     <legend>description</legend>
-
-    <p>Text to display before the argument help (default: <code>None</code>). It shouldn't be too long - don't mistake this with <code>man</code> page.</p>
-
-    <textarea id="ArgumentParser_description"></textarea>
+    <textarea id="ArgumentParser_description">
+Text to display before the argument help (default: None). It shouldn't be too long - don't mistake this with man page.
+    </textarea>
 </fieldset>
 
 <fieldset>
     <legend>epilog</legend>
-
-    <p>Text to display after the argument help (default: <code>None</code>).</p>
-
-    <textarea id="ArgumentParser_epilog"></textarea>
+    <textarea id="ArgumentParser_epilog">Text to display after the argument help (default: None).</textarea>
 </fieldset>
 
 <fieldset>
     <legend>add_help</legend>
-
     <p>
         <input type="checkbox" checked="checked" id="ArgumentParser_epilog">
         Add a <code>-h</code>/<code>–help</code> option to the parser.
@@ -59,7 +48,58 @@
 
 <h2>Arguments</h2>
 
-<p id="plus_button">+</p>
+<table>
+ <tr>
+  <td style="width: 40px"><p class="add_rm_button">+</p></td>
+  <td class="argument">
+    <table>
+        <tr>
+            <td>flag: <input type="text" value="Short flag like -h."></td>
+            <td>name: <input type="text" value="Long flag like --help."></td>
+            <td>action:
+                <select name="action">
+                    <option value="store" selected="selected">store</option>
+                    <option value="store_const">store_const</option>
+                    <option value="store_true">store_true</option>
+                    <option value="store_false">store_false</option>
+                    <option value="append_const">append_const</option>
+                    <option value="count">count</option>
+                    <option value="help">help</option>
+                    <option value="version">version</option>
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td>nargs: <input type="text" value="N/?/*/+/argparse.REMAINDER"></td>
+            <td>const: <input type="text" value="Constant value for action."></td>
+            <td>default: <input type="text" value="Default. Use quotes for string."></td>
+        </tr>
+
+        <tr>
+            <td>type:
+                <select name="type">
+                    <option value="int">int</option>
+                    <option value="float">float</option>
+                    <option value="long">long</option>
+                    <option value="str" selected="selected">str</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </td>
+            <td>choices: <input type="text" value="Choices - put your code here."></td>
+            <td>required: <input type="checkbox"></td>
+        </tr>
+
+        <tr>
+            <td>metavar: <input type="text" value="Specify alternative data example in help."></td>
+            <td>dest: <input type="text" value="Name of variable in parsed object."></td>
+            <td></td>
+        </tr>
+    </table>
+    <textarea id="argument_help">A brief description of what the argument does.</textarea>
+  </td>
+ </tr>
+</table>
 
 <h2>Output</h2>
 

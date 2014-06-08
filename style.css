@@ -26,22 +26,23 @@ h1 a:hover, h2 a:hover, h3 a:hover {
     text-decoration: underline;
 }
 
-/*h2, h3 {
-    padding-bottom: -5px;
-    margin-bottom: -5px;
-    padding-top: 5px;
-}*/
-
 .perex {
     font-style: italic;
 }
 
 fieldset p {
     font-style: italic;
+    margin: 0;
+}
+
+fieldset {
+    border: 0;
+    /*border-top: 1px solid lightgray;*/
 }
 
 fieldset legend {
     font-weight: bold;
+    font-family: monospace;
 }
 
 fieldset textarea {
@@ -56,7 +57,22 @@ fieldset p input {
     width: auto;
 }
 
-#plus_button {
+.add_rm_button {
     font-size: 3em;
     margin: 0;
+    padding: 0;
+    /*border: 1px solid black;*/
+}
+
+.argument {
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+textarea {
+    width: 100%;
+}
+
+table {
+    width: 100%;
 }
