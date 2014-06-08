@@ -69,10 +69,20 @@ fieldset p input {
     word-break: break-all;
 }
 
+.argument_table {
+    border: 1px solid lightgray;
+}
+
 textarea {
     width: 100%;
 }
 
 table {
     width: 100%;
+}
+
+.descr {
+    float: left;
+    width: 30%;
+    font-family: monospace;
 }

@@ -11,10 +11,10 @@
 <p class="perex">
     Python 2.7 <code><a href="https://docs.python.org/2.7/library/argparse.html">argparse</a></code> builder.
 
-    This website helps you to quickly create complex <code>argparse</code> interfaces.
+    This webpage helps you to quickly create complex <code>argparse</code> interfaces.
 </p>
 
-<h2>ArgumentParser objects</h2>
+<h2>ArgumentParser object</h2>
 
 <fieldset>
     <legend>prog</legend>
@@ -48,15 +48,15 @@ Text to display before the argument help (default: None). It shouldn't be too lo
 
 <h2>Arguments</h2>
 
-<table>
+<table class="argument_table">
  <tr>
   <td style="width: 40px"><p class="add_rm_button">+</p></td>
   <td class="argument">
     <table>
         <tr>
-            <td>flag: <input type="text" value="Short flag like -h."></td>
-            <td>name: <input type="text" value="Long flag like --help."></td>
-            <td>action:
+            <td><span class="descr">flag:</span> <input type="text" value="Short flag like -h."></td>
+            <td><span class="descr">name:</span> <input type="text" value="Long flag like --help."></td>
+            <td><span class="descr">action:</span>
                 <select name="action">
                     <option value="store" selected="selected">store</option>
                     <option value="store_const">store_const</option>
@@ -71,13 +71,13 @@ Text to display before the argument help (default: None). It shouldn't be too lo
         </tr>
 
         <tr>
-            <td>nargs: <input type="text" value="N/?/*/+/argparse.REMAINDER"></td>
-            <td>const: <input type="text" value="Constant value for action."></td>
-            <td>default: <input type="text" value="Default. Use quotes for string."></td>
+            <td><span class="descr">nargs:</span> <input type="text" value="N/?/*/+/argparse.REMAINDER"></td>
+            <td><span class="descr">const:</span> <input type="text" value="Constant value for action."></td>
+            <td><span class="descr">default:</span> <input type="text" value="Default value. Use quotes for string."></td>
         </tr>
 
         <tr>
-            <td>type:
+            <td><span class="descr">type:</span>
                 <select name="type">
                     <option value="int">int</option>
                     <option value="float">float</option>
@@ -86,13 +86,13 @@ Text to display before the argument help (default: None). It shouldn't be too lo
                     <option value="custom">Custom</option>
                 </select>
             </td>
-            <td>choices: <input type="text" value="Choices - put your code here."></td>
-            <td>required: <input type="checkbox"></td>
+            <td><span class="descr">choices:</span> <input type="text" value="Choices - put your code here."></td>
+            <td><span class="descr">required:</span> <input type="checkbox"></td>
         </tr>
 
         <tr>
-            <td>metavar: <input type="text" value="Specify alternative data example in help."></td>
-            <td>dest: <input type="text" value="Name of variable in parsed object."></td>
+            <td><span class="descr">metavar:</span> <input type="text" value="Specify alternative data example in help."></td>
+            <td><span class="descr">dest:</span> <input type="text" value="Name of variable in parsed object."></td>
             <td></td>
         </tr>
     </table>
