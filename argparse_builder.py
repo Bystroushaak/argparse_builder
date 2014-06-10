@@ -3,21 +3,19 @@
 #
 # Interpreter version: python 2.7
 #
-#= Imports ====================================================================
+# Imports =====================================================================
 from browser import document as doc
 
 
-#= Variables ==================================================================
+# Variables ===================================================================
 
 
 
-#= Functions & objects ========================================================
+# Functions & objects =========================================================
 
 
 
-#= Main program ===============================================================
-doc["output"] <= "it is working"
-
+# Main program ================================================================
 class ArgumentParserConf(object):
     def __init__(self):
         self.prog = None
@@ -43,6 +41,17 @@ class ArgumentParserConf(object):
                 self.__dict__.items()
             )
         )
+
+
+class Argument:
+    def __init__(self, element_id):
+        pass
+
+
+class Argparse:
+    def __init__(self):
+        self.argparse = ArgumentParserConf()
+        self.arguments = []
 
 
 a = ArgumentParserConf()
