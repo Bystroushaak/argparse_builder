@@ -4,7 +4,7 @@
 # Interpreter version: python 2.7
 #
 #= Imports ====================================================================
-
+from browser import document as doc
 
 
 #= Variables ==================================================================
@@ -16,13 +16,39 @@
 
 
 #= Main program ===============================================================
-from browser import document as doc
-
 doc["output"] <= "it is working"
 
-class ArgConfiguration(object):
-    def __init__(self, ):
-        pass
+class ArgumentParserConf(object):
+    def __init__(self):
+        self.prog = None
+        self.usage = None
+        self.description = None
+        self.epilog = None
+        self.add_help = None
+
+    def update_data(self):
+        for key in self.__dict__.keys():
+            if key.startswith("_"):
+                continue
+
+            self.__setattr__(
+                key,
+                doc["ArgumentParser_" + key].value
+            )
+
+    def get_dict(self):
+        return dict(
+            filter(
+                lambda x: not x[0].startswith("_"),
+                self.__dict__.items()
+            )
+        )
+
+
+a = ArgumentParserConf()
+a.update_data()
+doc["output"] <= str(a.get_dict())
+
 
 def serialize_to_python(args):
     """
