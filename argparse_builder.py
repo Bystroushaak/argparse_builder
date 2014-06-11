@@ -5,10 +5,11 @@
 #
 # Imports =====================================================================
 from browser import document as doc
+from browser.local_storage import storage
 
 
 # Variables ===================================================================
-
+_VER = 0.1
 
 
 # Functions & objects =========================================================
@@ -24,7 +25,7 @@ class ArgumentParserConf(object):
         self.epilog = None
         self.add_help = None
 
-    def update_data(self):
+    def update(self):
         for key in self.__dict__.keys():
             if key.startswith("_"):
                 continue
@@ -53,10 +54,10 @@ class Argparse:
         self.argparse = ArgumentParserConf()
         self.arguments = []
 
+        self.update()
 
-a = ArgumentParserConf()
-a.update_data()
-doc["output"] <= str(a.get_dict())
+    def update(self):
+        self.argparse.update()
 
 
 def serialize_to_python(args):
@@ -71,3 +72,11 @@ def collect_data():
     Collects data from all forms to the Configuration object.
     """
     pass
+
+
+# save default values of each imput when first run
+if "_DEF" not in storage or "_VER" not in storage or storage["_VER"] != _VER:
+    storage["_DEF"] = Argparse()
+    storage["_VER"] = _VER
+
+doc["output"] <= str(storage["_VER"])
