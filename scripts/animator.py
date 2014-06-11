@@ -7,7 +7,9 @@
 
 
 # Variables ===================================================================
-
+def add_argument_element(ev):
+    template = doc["argument_template"]
+    doc["arguments"].innerHTML = doc["arguments"].innerHTML + template.outerHTML
 
 
 # Functions & objects =========================================================
@@ -15,5 +17,4 @@
 
 
 # Main program ================================================================
-if __name__ == '__main__':
-    pass
+doc['argument_button'].bind('click', add_argument_element)

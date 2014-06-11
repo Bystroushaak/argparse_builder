@@ -3,7 +3,7 @@
     <title>Argparse builder</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <script src="http://brython.info/src/brython_dist.js"></script>
+    <script src="./brython_dist.js"></script>
     <script type="text/python" src="./scripts/builder.py"></script>
     <script type="text/python" src="./scripts/animator.py"></script>
     <script type="text/python" src="./scripts/validator.py"></script>
@@ -52,9 +52,9 @@
 <h2>Arguments</h2>
 
 <span id="arguments">
-<table class="argument_table">
+<table class="argument_table" id="argument_template">
  <tr>
-  <td><p class="add_rm_button">+</p></td>
+  <td><p class="add_rm_button" id="argument_button">+</p></td>
   <td class="argument">
     <table>
         <tr>
