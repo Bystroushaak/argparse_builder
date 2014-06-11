@@ -69,10 +69,10 @@ def collect_data():
     pass
 
 
-def from_titles_to_values():
-    for key in ArgumentParserConf().get_ids():
+def defaults_to_values():
+    for key in ArgumentParserConf().get_ids():  # TODO: rewrite to Argparse
         doc[key].value = doc[key].title
 
 
 # Main program ================================================================
-from_titles_to_values()
+defaults_to_values()
