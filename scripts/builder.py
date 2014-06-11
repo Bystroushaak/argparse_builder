@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Interpreter version: python 2.7
@@ -9,14 +8,7 @@ from browser.local_storage import storage
 
 
 # Variables ===================================================================
-_VER = 0.1
-
-
 # Functions & objects =========================================================
-
-
-
-# Main program ================================================================
 class ArgumentParserConf(object):
     def __init__(self):
         self.prog = None
@@ -25,15 +17,7 @@ class ArgumentParserConf(object):
         self.epilog = None
         self.add_help = None
 
-    def update(self):
-        for key in self.__dict__.keys():
-            if key.startswith("_"):
-                continue
-
-            self.__setattr__(
-                key,
-                doc["ArgumentParser_" + key].value
-            )
+        self._prefix = "ArgumentParser_"
 
     def get_dict(self):
         return dict(
@@ -42,6 +26,16 @@ class ArgumentParserConf(object):
                 self.__dict__.items()
             )
         )
+
+    def update(self):
+        for key in self.get_dict().keys():
+            self.__setattr__(
+                key,
+                doc[self._prefix + key].value
+            )
+
+    def get_ids(self):
+        return map(lambda x: self._prefix + x, self.get_dict().keys())
 
 
 class Argument:
@@ -67,6 +61,7 @@ def serialize_to_python(args):
     """
     pass
 
+
 def collect_data():
     """
     Collects data from all forms to the Configuration object.
@@ -74,9 +69,10 @@ def collect_data():
     pass
 
 
-# save default values of each imput when first run
-if "_DEF" not in storage or "_VER" not in storage or storage["_VER"] != _VER:
-    storage["_DEF"] = Argparse()
-    storage["_VER"] = _VER
+def from_titles_to_values():
+    for key in ArgumentParserConf().get_ids():
+        doc[key].value = doc[key].title
 
-doc["output"] <= str(storage["_VER"])
+
+# Main program ================================================================
+from_titles_to_values()

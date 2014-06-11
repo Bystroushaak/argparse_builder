@@ -4,7 +4,9 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script src="http://brython.info/src/brython_dist.js"></script>
-    <script type="text/python" src="./argparse_builder.py"></script>
+    <script type="text/python" src="./scripts/builder.py"></script>
+    <script type="text/python" src="./scripts/animator.py"></script>
+    <script type="text/python" src="./scripts/validator.py"></script>
 </head>
 <body onload="brython()">
 
@@ -20,24 +22,23 @@
 
 <fieldset>
     <legend>prog</legend>
-    <input type="text" id="ArgumentParser_prog" value="The name of the program. Default sys.argv[0].">
+    <input type="text" id="ArgumentParser_prog" title="The name of the program. Default sys.argv[0].">
 </fieldset>
 
 <fieldset>
     <legend>usage</legend>
-    <input type="text" id="ArgumentParser_usage" value="The string describing the program usage (default: generated from arguments added to parser).">
+    <input type="text" id="ArgumentParser_usage" title="The string describing the program usage (default: generated from arguments added to parser).">
 </fieldset>
 
 <fieldset>
     <legend>description</legend>
-    <textarea id="ArgumentParser_description">
-Text to display before the argument help (default: None). It shouldn't be too long - don't mistake this with man page.
+    <textarea id="ArgumentParser_description" title="Text to display before the argument help (default: None). It shouldn't be too long - don't mistake this with man page.">
     </textarea>
 </fieldset>
 
 <fieldset>
     <legend>epilog</legend>
-    <textarea id="ArgumentParser_epilog">Text to display after the argument help (default: None).</textarea>
+    <textarea id="ArgumentParser_epilog" title="Text to display after the argument help (default: None)."></textarea>
 </fieldset>
 
 <fieldset>
@@ -52,7 +53,7 @@ Text to display before the argument help (default: None). It shouldn't be too lo
 
 <table class="argument_table">
  <tr>
-  <td style="width: 40px"><p class="add_rm_button">+</p></td>
+  <td><p class="add_rm_button">+</p></td>
   <td class="argument">
     <table>
         <tr>
