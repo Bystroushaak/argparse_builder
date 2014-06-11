@@ -51,16 +51,17 @@
 
 <h2>Arguments</h2>
 
+<span id="arguments">
 <table class="argument_table">
  <tr>
   <td><p class="add_rm_button">+</p></td>
   <td class="argument">
     <table>
         <tr>
-            <td><span class="descr">flag:</span> <input type="text" value="Short flag like -h."></td>
-            <td><span class="descr">name:</span> <input type="text" value="Long flag like --help."></td>
+            <td><span class="descr">flag:</span> <input id="argument_flag" type="text" title="Short flag like -h."></td>
+            <td><span class="descr">name:</span> <input id="argument_name" type="text" title="Long flag like --help."></td>
             <td><span class="descr">action:</span>
-                <select name="action">
+                <select name="action" id="argument_action" >
                     <option value="store" selected="selected">store</option>
                     <option value="store_const">store_const</option>
                     <option value="store_true">store_true</option>
@@ -74,14 +75,14 @@
         </tr>
 
         <tr>
-            <td><span class="descr">nargs:</span> <input type="text" value="N/?/*/+/argparse.REMAINDER"></td>
-            <td><span class="descr">const:</span> <input type="text" value="Constant value for action."></td>
-            <td><span class="descr">default:</span> <input type="text" value="Default value. Use quotes for string."></td>
+            <td><span class="descr">nargs:</span> <input id="argument_nargs" type="text" title="N/?/*/+/argparse.REMAINDER"></td>
+            <td><span class="descr">const:</span> <input id="argument_const" type="text" title="Constant value for action."></td>
+            <td><span class="descr">default:</span> <input id="argument_default" type="text" title="Default value. Use quotes for string."></td>
         </tr>
 
         <tr>
             <td><span class="descr">type:</span>
-                <select name="type">
+                <select name="type" id="argument_type">
                     <option value="int">int</option>
                     <option value="float">float</option>
                     <option value="long">long</option>
@@ -89,20 +90,21 @@
                     <option value="custom">Custom</option>
                 </select>
             </td>
-            <td><span class="descr">choices:</span> <input type="text" value="Choices - put your code here."></td>
-            <td><span class="descr">required:</span> <input type="checkbox"></td>
+            <td><span class="descr">choices:</span> <input id="argument_choices" title="text" title="Choices - put your code here."></td>
+            <td><span class="descr">required:</span> <input id="argument_required" type="checkbox"></td>
         </tr>
 
         <tr>
-            <td><span class="descr">metavar:</span> <input type="text" value="Specify alternative data example in help."></td>
-            <td><span class="descr">dest:</span> <input type="text" value="Name of variable in parsed object."></td>
+            <td><span class="descr">metavar:</span> <input id="argument_metavar" type="text" title="Specify alternative data example in help."></td>
+            <td><span class="descr">dest:</span> <input id="argument_dest" type="text" title="Name of variable in parsed object."></td>
             <td></td>
         </tr>
     </table>
-    <textarea id="argument_help">A brief description of what the argument does.</textarea>
+    <textarea id="argument_help" title="help: A brief description of what the argument does."></textarea>
   </td>
  </tr>
 </table>
+</span>
 
 <h2>Output</h2>
 
