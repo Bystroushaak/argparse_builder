@@ -25,16 +25,21 @@ ARG_COUNTER = 0  # used as ID of new arguments
 
 
 # Functions & objects =========================================================
+def add_callbacks(ID):
+    doc[ID + "_argument_button"].bind("click", add_argument_element)
+
+
 def add_argument_element(ev=None):
     global ARG_COUNTER
     ARG_COUNTER += 1
-    cnt = str(ARG_COUNTER)
+    ID = str(ARG_COUNTER)
 
-    table = html.TABLE(id=cnt+"argument", Class="argument_table")
+    table = html.TABLE(id=ID+"argument", Class="argument_table")
     template = doc["argument_template"].innerHTML
-    table.html = template.replace("$ID", cnt)
+    table.html = template.replace("$ID", ID)
     doc["arguments"] <= table
-    doc[cnt + "_argument_button"].bind("click", add_argument_element)
+    
+    add_callbacks(ID)
 
 
 # Main program ================================================================

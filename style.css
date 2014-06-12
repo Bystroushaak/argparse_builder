@@ -72,6 +72,11 @@ fieldset p input {
 
 .argument_table {
     border: 1px solid lightgray;
+    margin-bottom: 10px;
+}
+
+#argument_template {
+    display: none;
 }
 
 textarea {
@@ -88,6 +93,3 @@ table {
     font-family: monospace;
 }
 
-#argument_template {
-    display: none;
-}

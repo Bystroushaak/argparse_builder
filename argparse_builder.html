@@ -58,9 +58,16 @@
   <td class="argument">
     <table>
         <tr>
-            <td><span class="descr">flag:</span> <input id="$ID_argument_flag" type="text" title="Short flag like -h."></td>
-            <td><span class="descr">name:</span> <input id="$ID_argument_name" type="text" title="Long flag like --help."></td>
-            <td><span class="descr">action:</span>
+            <td>
+                <span class="descr">flag:</span>
+                <input id="$ID_argument_flag" type="text" title="Short flag like -h.">
+            </td>
+            <td>
+                <span class="descr">name:</span>
+                <input id="$ID_argument_name" type="text" title="Long flag like --help.">
+            </td>
+            <td>
+                <span class="descr">action:</span>
                 <select name="action" id="$ID_argument_action" >
                     <option value="store" selected="selected">store</option>
                     <option value="store_const">store_const</option>
@@ -75,9 +82,18 @@
         </tr>
 
         <tr>
-            <td><span class="descr">nargs:</span> <input id="$ID_argument_nargs" type="text" title="N/?/*/+/argparse.REMAINDER"></td>
-            <td><span class="descr">const:</span> <input id="$ID_argument_const" type="text" title="Constant value for action."></td>
-            <td><span class="descr">default:</span> <input id="$ID_argument_default" type="text" title="Default value. Use quotes for string."></td>
+            <td>
+                <span class="descr">nargs:</span>
+                <input id="$ID_argument_nargs" type="text" title="N/?/*/+/argparse.REMAINDER">
+            </td>
+            <td>
+                <span class="descr">const:</span>
+                <input id="$ID_argument_const" type="text" title="Constant value for action.">
+            </td>
+            <td>
+                <span class="descr">default:</span>
+                <input id="$ID_argument_default" type="text" title="Default value. Use quotes for string.">
+            </td>
         </tr>
 
         <tr>
@@ -90,13 +106,25 @@
                     <option value="custom">Custom</option>
                 </select>
             </td>
-            <td><span class="descr">choices:</span> <input id="$ID_argument_choices" title="text" title="Choices - put your code here."></td>
-            <td><span class="descr">required:</span> <input id="$ID_argument_required" type="checkbox"></td>
+            <td>
+                <span class="descr">choices:</span>
+                <input id="$ID_argument_choices" type="text" title="A container of the allowable values for the argument.">
+            </td>
+            <td>
+                <span class="descr">required:</span>
+                <input id="$ID_argument_required" type="checkbox">
+            </td>
         </tr>
 
         <tr>
-            <td><span class="descr">metavar:</span> <input id="$ID_argument_metavar" type="text" title="Specify alternative data example in help."></td>
-            <td><span class="descr">dest:</span> <input id="$ID_argument_dest" type="text" title="Name of variable in parsed object."></td>
+            <td>
+                <span class="descr">metavar:</span>
+                <input id="$ID_argument_metavar" type="text" title="Specify alternative data example in help.">
+            </td>
+            <td>
+                <span class="descr">dest:</span>
+                <input id="$ID_argument_dest" type="text" title="Name of variable in parsed object.">
+            </td>
             <td></td>
         </tr>
     </table>
