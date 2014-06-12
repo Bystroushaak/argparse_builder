@@ -4,11 +4,11 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script src="./brython_dist.js"></script>
-    <script type="text/python" src="./scripts/builder.py"></script>
-    <script type="text/python" src="./scripts/animator.py"></script>
-    <script type="text/python" src="./scripts/validator.py"></script>
+    <script type="text/python3" src="./scripts/builder.py"></script>
+    <script type="text/python3" src="./scripts/animator.py"></script>
+    <script type="text/python3" src="./scripts/validator.py"></script>
 </head>
-<body onload="brython()">
+<body onload="brython(1)">
 
 <h1><code>argparse</code> builder</h1>
 
@@ -54,14 +54,14 @@
 <span id="arguments">
 <table class="argument_table" id="argument_template">
  <tr>
-  <td><p class="add_rm_button" id="argument_button">+</p></td>
+  <td><p class="add_rm_button" id="$ID_argument_button">+</p></td>
   <td class="argument">
     <table>
         <tr>
-            <td><span class="descr">flag:</span> <input id="argument_flag" type="text" title="Short flag like -h."></td>
-            <td><span class="descr">name:</span> <input id="argument_name" type="text" title="Long flag like --help."></td>
+            <td><span class="descr">flag:</span> <input id="$ID_argument_flag" type="text" title="Short flag like -h."></td>
+            <td><span class="descr">name:</span> <input id="$ID_argument_name" type="text" title="Long flag like --help."></td>
             <td><span class="descr">action:</span>
-                <select name="action" id="argument_action" >
+                <select name="action" id="$ID_argument_action" >
                     <option value="store" selected="selected">store</option>
                     <option value="store_const">store_const</option>
                     <option value="store_true">store_true</option>
@@ -75,14 +75,14 @@
         </tr>
 
         <tr>
-            <td><span class="descr">nargs:</span> <input id="argument_nargs" type="text" title="N/?/*/+/argparse.REMAINDER"></td>
-            <td><span class="descr">const:</span> <input id="argument_const" type="text" title="Constant value for action."></td>
-            <td><span class="descr">default:</span> <input id="argument_default" type="text" title="Default value. Use quotes for string."></td>
+            <td><span class="descr">nargs:</span> <input id="$ID_argument_nargs" type="text" title="N/?/*/+/argparse.REMAINDER"></td>
+            <td><span class="descr">const:</span> <input id="$ID_argument_const" type="text" title="Constant value for action."></td>
+            <td><span class="descr">default:</span> <input id="$ID_argument_default" type="text" title="Default value. Use quotes for string."></td>
         </tr>
 
         <tr>
             <td><span class="descr">type:</span>
-                <select name="type" id="argument_type">
+                <select name="type" id="$ID_argument_type">
                     <option value="int">int</option>
                     <option value="float">float</option>
                     <option value="long">long</option>
@@ -90,17 +90,17 @@
                     <option value="custom">Custom</option>
                 </select>
             </td>
-            <td><span class="descr">choices:</span> <input id="argument_choices" title="text" title="Choices - put your code here."></td>
-            <td><span class="descr">required:</span> <input id="argument_required" type="checkbox"></td>
+            <td><span class="descr">choices:</span> <input id="$ID_argument_choices" title="text" title="Choices - put your code here."></td>
+            <td><span class="descr">required:</span> <input id="$ID_argument_required" type="checkbox"></td>
         </tr>
 
         <tr>
-            <td><span class="descr">metavar:</span> <input id="argument_metavar" type="text" title="Specify alternative data example in help."></td>
-            <td><span class="descr">dest:</span> <input id="argument_dest" type="text" title="Name of variable in parsed object."></td>
+            <td><span class="descr">metavar:</span> <input id="$ID_argument_metavar" type="text" title="Specify alternative data example in help."></td>
+            <td><span class="descr">dest:</span> <input id="$ID_argument_dest" type="text" title="Name of variable in parsed object."></td>
             <td></td>
         </tr>
     </table>
-    <textarea id="argument_help" title="help: A brief description of what the argument does."></textarea>
+    <textarea id="$ID_argument_help" title="help: A brief description of what the argument does."></textarea>
   </td>
  </tr>
 </table>

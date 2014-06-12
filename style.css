@@ -87,3 +87,7 @@ table {
     width: 30%;
     font-family: monospace;
 }
+
+#argument_template {
+    display: none;
+}

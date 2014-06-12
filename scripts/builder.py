@@ -4,7 +4,6 @@
 #
 # Imports =====================================================================
 from browser import document as doc
-from browser.local_storage import storage
 
 
 # Variables ===================================================================
