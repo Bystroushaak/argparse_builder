@@ -54,7 +54,13 @@
 <span id="arguments">
 <table class="argument_table" id="argument_template">
  <tr>
-  <td><p class="add_rm_button" id="$ID_argument_button">+</p></td>
+  <td class="add_rm_button" id="$ID_argument_buttons">
+    <span id="$ID_argument_button_up" title="Move argument up.">↑<br /></span>
+    <span id="$ID_argument_button_add" title="Add new argument.">+<br /></span>
+    <span id="$ID_argument_button_down" title="Move argument down.">↓<br /></span>
+    <hr class="remove_button" />
+    <span id="$ID_argument_button_del" title="Remove argument.">✖</span>
+  </td>
   <td class="argument">
     <table>
         <tr>
@@ -128,7 +134,7 @@
             <td></td>
         </tr>
     </table>
-    <textarea id="$ID_argument_help" title="help: A brief description of what the argument does."></textarea>
+    <textarea id="$ID_argument_help" title="Help (a brief description of what the argument does)."></textarea>
   </td>
  </tr>
 </table>

@@ -26,7 +26,7 @@ ARG_COUNTER = 0  # used as ID of new arguments
 
 # Functions & objects =========================================================
 def add_callbacks(ID):
-    doc[ID + "_argument_button"].bind("click", add_argument_element)
+    doc[ID + "_argument_button_add"].bind("click", add_argument_element)
 
 
 def add_argument_element(ev=None):

@@ -58,11 +58,19 @@ fieldset p input {
 }
 
 .add_rm_button {
+    width: 40px;
     font-size: 3em;
+
     margin: 0;
     padding: 0;
-    width: 40px;
-    /*border: 1px solid black;*/
+
+    line-height: 0.8em;
+    text-align: center;
+}
+
+.remove_button {
+    padding: 0;
+    margin: 0.1em;
 }
 
 .argument {
