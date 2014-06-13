@@ -70,7 +70,7 @@ def collect_data():
 
 def defaults_to_values():
     for key in ArgumentParserConf().get_ids():  # TODO: rewrite to Argparse
-        if doc[key].type == "text":
+        if doc[key].type == "text" or doc[key].nodeName == "TEXTAREA":
             doc[key].value = doc[key].title
 
 
