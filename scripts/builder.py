@@ -4,6 +4,7 @@
 #
 # Imports =====================================================================
 from browser import document as doc
+from browser import html
 
 
 # Variables ===================================================================
@@ -69,10 +70,13 @@ def collect_data():
 
 
 def defaults_to_values():
-    for key in ArgumentParserConf().get_ids():  # TODO: rewrite to Argparse
-        if doc[key].type == "text" or doc[key].nodeName == "TEXTAREA":
-            doc[key].value = doc[key].title
+    for key in doc[html.INPUT] + doc[html.TEXTAREA]:
+        # skip already filled values
+        if key.value.strip():
+            continue
+
+        if key.type == "text" or key.nodeName == "TEXTAREA":
+            key.value = key.title
 
 
 # Main program ================================================================
-defaults_to_values()

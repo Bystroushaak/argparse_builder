@@ -40,6 +40,7 @@ def add_argument_element(ev=None):
     doc["arguments"] <= table
     
     add_callbacks(ID)
+    defaults_to_values()
 
 
 # Main program ================================================================
