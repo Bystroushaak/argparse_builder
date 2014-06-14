@@ -152,9 +152,10 @@ def switch_values(arg1, arg2):
         arg1 (HTML element): First element.
         arg2 (HTML element): Second element.
     """
+    tag_pool = ["input", "textarea", "select"]
     items = zip(
-        arg1.get(selector="input") + arg1.get(selector="textarea"),
-        arg2.get(selector="input") + arg2.get(selector="textarea")
+        sum(map(lambda x: arg1.get(selector=x), tag_pool), []),
+        sum(map(lambda x: arg2.get(selector=x), tag_pool), []),
     )
 
     for item1, item2 in items:
