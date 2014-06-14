@@ -69,14 +69,4 @@ def collect_data():
     pass
 
 
-def defaults_to_values():
-    for key in doc[html.INPUT] + doc[html.TEXTAREA]:
-        # skip already filled values
-        if key.value.strip():
-            continue
-
-        if key.type == "text" or key.nodeName == "TEXTAREA":
-            key.value = key.title
-
-
 # Main program ================================================================
