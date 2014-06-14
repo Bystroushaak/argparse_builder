@@ -7,7 +7,7 @@ from browser import document as doc
 from browser import html
 
 # Variables ===================================================================
-ARG_PARAMS = [
+ARG_PARAMS = [  # TODO: remove? It is not really usefull.
     "flag",
     "name",
     "action",
@@ -21,7 +21,7 @@ ARG_PARAMS = [
     "dest",
     "help"
 ]
-ARG_COUNTER = 0  # Increment only counter used as pool for ID / new arguments
+_ARG_COUNTER = 0  # Increment only counter used as pool for ID / new arguments
 
 
 # Functions & objects =========================================================
@@ -113,12 +113,15 @@ def switch_values(arg1, arg2):
         item1.value, item2.value = item2.value, item1.value
 
 
+def get_id_from_pool():
+    global _ARG_COUNTER
+    _ARG_COUNTER += 1
+    return _ARG_COUNTER
+
+
 # Animations ==================================================================
 def add_argument(ev=None):
-    global ARG_COUNTER
-
-    ARG_COUNTER += 1
-    ID = str(ARG_COUNTER)  # get new ID from pool
+    ID = str(get_id_from_pool())
 
     template = doc["argument_template"].innerHTML
 
@@ -131,10 +134,9 @@ def add_argument(ev=None):
 
 
 def remove_argument(ev):
-    global ARG_COUNTER
-
     if len(get_list_of_arguments()) > 1:
         arg_from_target(ev.target).outerHTML = ""
+
 
 def move_argument_up(ev):
     arg = arg_from_target(ev.target)
