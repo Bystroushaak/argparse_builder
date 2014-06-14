@@ -38,6 +38,34 @@ def add_callbacks(ID):
     doc[ID + "_argument_button_up"].bind("click", move_argument_up)
     doc[ID + "_argument_button_down"].bind("click", move_argument_down)
 
+    arg = arg_from_id(ID)
+    add_removable_help(
+        arg.get(selector="input") + arg.get(selector="textarea")
+    )
+
+
+def add_removable_help(clickable):
+    """
+    Adds and removes help on focus.
+
+    Args:
+        clickable (list): List of HTML elements.
+    """
+    def input_remove_help(ev):
+        if ev.target.value == ev.target.title:
+            ev.target.value = ""
+
+    def input_add_help(ev):
+        if ev.target.value == "":
+            ev.target.value = ev.target.title
+
+    for item in clickable:
+        item.bind("focus", input_remove_help)
+        item.bind("blur", input_add_help)
+
+        if item.type == "text" or item.nodeName == "TEXTAREA":
+            item.value = item.title
+
 
 def get_list_of_arguments():
     """
@@ -51,19 +79,6 @@ def get_list_of_arguments():
             docs
         )
     )
-
-
-def defaults_to_values():
-    """
-    Goes thru all inputs/textareas and puts content their .title property to
-    .value, if value is not already set.
-    """
-    for key in doc[html.INPUT] + doc[html.TEXTAREA]:
-        if key.value.strip():  # skip already filled values
-            continue
-
-        if key.type == "text" or key.nodeName == "TEXTAREA":
-            key.value = key.title
 
 
 def id_from_target(target):
@@ -167,7 +182,6 @@ def add_argument(ev=None):
     doc["arguments"] <= table
 
     add_callbacks(ID)
-    defaults_to_values()
 
 
 def remove_argument(ev):
@@ -197,6 +211,8 @@ def move_argument_down(ev):
 
 # Main program ================================================================
 add_argument()
+add_removable_help(doc.get(selector="input") + doc.get(selector="textarea"))
+
 
 # debug =======================================================================
 # doc["output"].value = str(get_list_of_arguments())
