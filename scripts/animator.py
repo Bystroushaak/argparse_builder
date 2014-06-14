@@ -93,10 +93,35 @@ def arg_from_id(ID):
 
 
 def arg_from_target(target):
+    """
+    Get matching `argument` from subelement `target`.
+
+    Args:
+        target (HTML element): Button, input or any subelement in argument with
+                               proper ``.id``.
+
+    Returns:
+        HTML element: `argument` table containing given `target`.
+    """
     return arg_from_id(id_from_target(target))
 
 
 def index_of_argument(arg, args=None):
+    """
+    Returns index of given argument in array of arguments visible at page.
+
+    Args:
+        arg (str): Argument for which index you are looking for.
+        args (list, default None): Optional list which will be used to look for
+                                   `arg`. If not set, get_list_of_arguments() is
+                                   used.
+
+    Returns:
+        int: Index of argument in array or ValueError if not found.
+
+    Raises:
+        ValueError: If `arg` is not found.
+    """
     if not args:
         args = get_list_of_arguments()
 
@@ -104,6 +129,14 @@ def index_of_argument(arg, args=None):
 
 
 def switch_values(arg1, arg2):
+    """
+    Switch .value properties in corresponding input/textarea child from both
+    elements.
+
+    Args:
+        arg1 (HTML element): First element.
+        arg2 (HTML element): Second element.
+    """
     items = zip(
         arg1.get(selector="input") + arg1.get(selector="textarea"),
         arg2.get(selector="input") + arg2.get(selector="textarea")
@@ -114,6 +147,10 @@ def switch_values(arg1, arg2):
 
 
 def get_id_from_pool():
+    """
+    Returns:
+        int: Incremented ID from previous call.
+    """
     global _ARG_COUNTER
     _ARG_COUNTER += 1
     return _ARG_COUNTER
