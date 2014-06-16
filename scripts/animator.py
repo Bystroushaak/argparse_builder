@@ -63,6 +63,7 @@ def add_removable_help(clickable):
         item.bind("focus", input_remove_help)
         item.bind("blur", input_add_help)
 
+        # add help to the .value
         if item.type == "text" or item.nodeName == "TEXTAREA":
             item.value = item.title
 

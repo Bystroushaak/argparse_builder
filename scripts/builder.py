@@ -4,11 +4,20 @@
 #
 # Imports =====================================================================
 from browser import document as doc
-from browser import html
+import animator
 
 
 # Variables ===================================================================
 # Functions & objects =========================================================
+def _filtered_dict(d):
+    return dict(
+        filter(
+            lambda x: not x[0].startswith("_"),
+            d.items()
+        )
+    )
+
+
 class ArgumentParserConf(object):
     def __init__(self):
         self.prog = None
@@ -20,27 +29,46 @@ class ArgumentParserConf(object):
         self._prefix = "ArgumentParser_"
 
     def get_dict(self):
-        return dict(
-            filter(
-                lambda x: not x[0].startswith("_"),
-                self.__dict__.items()
-            )
-        )
+        return _filtered_dict(self.__dict__)
 
     def update(self):
         for key in self.get_dict().keys():
-            self.__setattr__(
-                key,
-                doc[self._prefix + key].value
-            )
+            item = doc[self._prefix + key]
+            value = item.value
 
-    def get_ids(self):
-        return map(lambda x: self._prefix + x, self.get_dict().keys())
+            # default values == None
+            if value == item.title or value.strip() == "":
+                value = None
+
+            self.__setattr__(key, value)
+
+    # def get_ids(self):
+        # return map(lambda x: self._prefix + x, self.get_dict().keys())
 
 
-class Argument:
-    def __init__(self, element_id):
-        pass
+class Argument(object):
+    def __init__(self, element):
+        tag_pool = ["input", "textarea", "select"]
+        self._arguments = sum(
+            map(lambda x: element.get(selector=x), tag_pool),
+            []
+        )
+
+        self.update()
+
+    def update(self):
+        # read dynamically all arguments
+        for item in self._arguments:
+            value = item.value
+
+            # default values == None
+            if value == item.title or value.strip() == "":
+                value = None
+
+            self.__setattr__(item.id.split("_")[-1], value)
+
+    def get_dict(self):
+        return _filtered_dict(self.__dict__)
 
 
 class Argparse:
@@ -52,6 +80,13 @@ class Argparse:
 
     def update(self):
         self.argparse.update()
+
+        self.arguments = list(map(lambda x: Argument(x), animator.get_list_of_arguments()))
+
+    def __str__(self, ev=None):
+        return str(self.argparse.get_dict()) + "\n" + str(list(map(lambda x: x.get_dict(), self.arguments)))
+        # 
+        # return str(Argument(animator.get_list_of_arguments()[0]).__dict__)
 
 
 def serialize_to_python(args):
@@ -70,3 +105,9 @@ def collect_data():
 
 
 # Main program ================================================================
+a = Argparse()
+
+def set_txt(ev=None):
+    doc["output"].value = a.__str__()
+
+doc["output"].bind("click", set_txt)
