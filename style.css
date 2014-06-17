@@ -101,3 +101,6 @@ table {
     font-family: monospace;
 }
 
+#output {
+    min-height: 600px;
+}
