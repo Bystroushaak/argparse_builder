@@ -8,6 +8,22 @@ import animator
 
 
 # Variables ===================================================================
+ARG_PARSER_TEMPLATE = """import argparse
+
+# ...
+parser = argparse.ArgumentParser(
+    $parameters
+)
+$arguments
+args = parser.parser_args()
+
+"""
+
+ARG_TEMPLATE = """parser.add_argument(
+    $parameters
+)"""
+
+
 # Functions & objects =========================================================
 def _filtered_dict(d):
     return dict(
@@ -18,13 +34,41 @@ def _filtered_dict(d):
     )
 
 
-class ArgumentParserConf(object):
+def _dict_to_params(d, non_str):
+    out = []
+    for key, val in d.items():
+        if val is None:
+            continue
+
+        val = str(val)
+        line = str(key) + "="
+
+        if key in non_str:
+            line += val
+        else:
+            val = val.replace(r"\\", r"\\")
+            quote = '"'
+            if "\n" in val:
+                quote = quote * 3
+            line += quote + val + quote
+
+        out.append(line)
+
+    return out
+
+
+class ArgumentParser(object):
     def __init__(self):
         self.prog = None
         self.usage = None
         self.description = None
         self.epilog = None
         self.add_help = None
+
+        self._non_str = [
+            "prog",
+            "add_help"
+        ]
 
         self._prefix = "ArgumentParser_"
 
@@ -40,10 +84,16 @@ class ArgumentParserConf(object):
             if value == item.title or value.strip() == "":
                 value = None
 
+            if item.type == "checkbox":
+                value = item.checked
+
             self.__setattr__(key, value)
 
-    # def get_ids(self):
-        # return map(lambda x: self._prefix + x, self.get_dict().keys())
+    def __str__(self):
+        return ARG_PARSER_TEMPLATE.replace(
+            "$parameters",
+            ",\n    ".join(_dict_to_params(self.get_dict(), self._non_str))
+        )
 
 
 class Argument(object):
@@ -54,7 +104,13 @@ class Argument(object):
             []
         )
 
-        self.update()
+        self._non_str = [
+            "const",
+            "default",
+            "type",
+            "choices",
+            "required"
+        ]
 
     def update(self):
         # read dynamically all arguments
@@ -65,18 +121,26 @@ class Argument(object):
             if value == item.title or value.strip() == "":
                 value = None
 
+            if item.type == "checkbox":
+                value = item.checked
+
             self.__setattr__(item.id.split("_")[-1], value)
 
     def get_dict(self):
+        self.update()
         return _filtered_dict(self.__dict__)
+
+    def __str__(self):
+        return ARG_TEMPLATE.replace(
+            "$parameters",
+            ",\n    ".join(_dict_to_params(self.get_dict(), self._non_str))
+        )
 
 
 class Argparse:
     def __init__(self):
-        self.argparse = ArgumentParserConf()
+        self.argparse = ArgumentParser()
         self.arguments = []
-
-        self.update()
 
     def update(self):
         self.argparse.update()
@@ -84,9 +148,13 @@ class Argparse:
         self.arguments = list(map(lambda x: Argument(x), animator.get_list_of_arguments()))
 
     def __str__(self, ev=None):
-        return str(self.argparse.get_dict()) + "\n" + str(list(map(lambda x: x.get_dict(), self.arguments)))
-        # 
-        # return str(Argument(animator.get_list_of_arguments()[0]).__dict__)
+        self.update()
+
+        # return str(self.argparse) + "\n" + str(list(map(lambda x: x.get_dict(), self.arguments)))
+        return str(self.argparse).replace(
+            "$arguments",
+            "\n".join(list(map(lambda x: str(x), self.arguments)))
+        )
 
 
 def serialize_to_python(args):
