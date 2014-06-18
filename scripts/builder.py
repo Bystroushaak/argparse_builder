@@ -25,39 +25,53 @@ ARG_TEMPLATE = """parser.add_argument(
 
 
 # Functions & objects =========================================================
-def _filtered_dict(d):
-    return dict(
-        filter(
-            lambda x: not x[0].startswith("_"),
-            d.items()
+class ArgumentCommon(object):
+    def __init__(self, ):
+        self._non_str = []
+        self._template = ""
+
+    def _filtered_dict(self):
+        return dict(
+            filter(
+                lambda x: not x[0].startswith("_"),
+                self.__dict__.items()
+            )
         )
-    )
+
+    def _dict_to_params(self):
+        out = []
+        for key, val in self._filtered_dict().items():
+            if val is None:
+                continue
+
+            line = str(key) + "="
+            val = str(val)
+
+            # don't escape native values
+            if key in self._non_str:
+                line += val
+            else:
+                val = val.replace(r"\\", r"\\")
+
+                # handle multiline strings
+                quote = '"'
+                if "\n" in val:
+                    quote = quote * 3
+
+                line += quote + val + quote
+
+            out.append(line)
+
+        return out
+
+    def __str__(self):
+        return self._template.replace(
+            "$parameters",
+            ",\n    ".join(self._dict_to_params())
+        )
 
 
-def _dict_to_params(d, non_str):
-    out = []
-    for key, val in d.items():
-        if val is None:
-            continue
-
-        val = str(val)
-        line = str(key) + "="
-
-        if key in non_str:
-            line += val
-        else:
-            val = val.replace(r"\\", r"\\")
-            quote = '"'
-            if "\n" in val:
-                quote = quote * 3
-            line += quote + val + quote
-
-        out.append(line)
-
-    return out
-
-
-class ArgumentParser(object):
+class ArgumentParser(ArgumentCommon):
     def __init__(self):
         self.prog = None
         self.usage = None
@@ -65,15 +79,17 @@ class ArgumentParser(object):
         self.epilog = None
         self.add_help = None
 
+        # don't quote following parameters
         self._non_str = [
             "prog",
             "add_help"
         ]
 
         self._prefix = "ArgumentParser_"
+        self._template = ARG_PARSER_TEMPLATE
 
     def get_dict(self):
-        return _filtered_dict(self.__dict__)
+        return self._filtered_dict()
 
     def update(self):
         for key in self.get_dict().keys():
@@ -89,14 +105,8 @@ class ArgumentParser(object):
 
             self.__setattr__(key, value)
 
-    def __str__(self):
-        return ARG_PARSER_TEMPLATE.replace(
-            "$parameters",
-            ",\n    ".join(_dict_to_params(self.get_dict(), self._non_str))
-        )
 
-
-class Argument(object):
+class Argument(ArgumentCommon):
     def __init__(self, element):
         tag_pool = ["input", "textarea", "select"]
         self._arguments = sum(
@@ -104,6 +114,7 @@ class Argument(object):
             []
         )
 
+        # don't quote following parameters
         self._non_str = [
             "const",
             "default",
@@ -111,6 +122,8 @@ class Argument(object):
             "choices",
             "required"
         ]
+
+        self._template = ARG_TEMPLATE
 
     def update(self):
         # read dynamically all arguments
@@ -126,15 +139,9 @@ class Argument(object):
 
             self.__setattr__(item.id.split("_")[-1], value)
 
-    def get_dict(self):
+    def _filtered_dict(self):
         self.update()
-        return _filtered_dict(self.__dict__)
-
-    def __str__(self):
-        return ARG_TEMPLATE.replace(
-            "$parameters",
-            ",\n    ".join(_dict_to_params(self.get_dict(), self._non_str))
-        )
+        return super(Argument, self)._filtered_dict()
 
 
 class Argparse:
@@ -145,31 +152,18 @@ class Argparse:
     def update(self):
         self.argparse.update()
 
-        self.arguments = list(map(lambda x: Argument(x), animator.get_list_of_arguments()))
+        self.arguments = map(
+            lambda x: Argument(x),
+            animator.get_list_of_arguments()
+        )
 
     def __str__(self, ev=None):
         self.update()
 
-        # return str(self.argparse) + "\n" + str(list(map(lambda x: x.get_dict(), self.arguments)))
         return str(self.argparse).replace(
             "$arguments",
-            "\n".join(list(map(lambda x: str(x), self.arguments)))
+            "\n".join(map(lambda x: str(x), self.arguments))
         )
-
-
-def serialize_to_python(args):
-    """
-    Serializes dictionary with data to actual python code, which is then
-    displayed in output textarea.
-    """
-    pass
-
-
-def collect_data():
-    """
-    Collects data from all forms to the Configuration object.
-    """
-    pass
 
 
 # Main program ================================================================
