@@ -41,7 +41,7 @@ class ArgumentCommon(object):
     def _dict_to_params(self):
         out = []
         for key, val in self._filtered_dict().items():
-            if val is None:
+            if val is None :
                 continue
 
             line = str(key) + "="
@@ -65,9 +65,14 @@ class ArgumentCommon(object):
         return out
 
     def __str__(self):
+        params = self._dict_to_params()
+
+        if not params:
+            return ""
+
         return self._template.replace(
             "$parameters",
-            ",\n    ".join(self._dict_to_params())
+            ",\n    ".join(params)
         )
 
 
@@ -79,7 +84,7 @@ class ArgumentParser(ArgumentCommon):
         self.epilog = None
         self.add_help = None
 
-        # don't quote following parameters
+        # don't quote following parameters;
         self._non_str = [
             "prog",
             "add_help"
@@ -114,7 +119,7 @@ class Argument(ArgumentCommon):
             []
         )
 
-        # don't quote following parameters
+        # don't quote following parameters;
         self._non_str = [
             "const",
             "default",
@@ -123,12 +128,19 @@ class Argument(ArgumentCommon):
             "required"
         ]
 
+        self._non_str_defaults = {
+            "type": "str",
+            "action": "store",
+            "required": False
+        }
+
         self._template = ARG_TEMPLATE
 
     def update(self):
         # read dynamically all arguments
         for item in self._arguments:
             value = item.value
+            arg_name = item.id.split("_")[-1]
 
             # default values == None
             if value == item.title or value.strip() == "":
@@ -137,14 +149,17 @@ class Argument(ArgumentCommon):
             if item.type == "checkbox":
                 value = item.checked
 
-            self.__setattr__(item.id.split("_")[-1], value)
+            if self._non_str_defaults.get(arg_name, False) == value:
+                value = None
+
+            self.__setattr__(arg_name, value)
 
     def _filtered_dict(self):
         self.update()
         return super(Argument, self)._filtered_dict()
 
 
-class Argparse:
+class Argparse:  # TODO: check how many times is updated called
     def __init__(self):
         self.argparse = ArgumentParser()
         self.arguments = []
