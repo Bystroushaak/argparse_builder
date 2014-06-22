@@ -23,18 +23,12 @@ def add_callbacks(ID):
     doc[ID + "_argument_button_rm"].bind("click", remove_argument)
     doc[ID + "_argument_button_up"].bind("click", move_argument_up)
     doc[ID + "_argument_button_down"].bind("click", move_argument_down)
-    doc[ID + "_argument_type"].bind("change", select_to_string)
+    doc[ID + "_argument_type"].bind("change", select_to_text)
 
     arg = arg_from_id(ID)
     add_removable_help(
         arg.get(selector="input") + arg.get(selector="textarea")
     )
-
-
-def select_to_string(ev):
-    if ev.target.value == "custom":
-        ID = ev.target.id
-        ev.target.outerHTML = "<input type='text' name='type' id='%s' />" % ID
 
 
 def add_removable_help(clickable):
@@ -184,7 +178,6 @@ def switch_values(arg1, arg2):
         item1.title, item2.title = item2.title, item1.title
 
 
-
 def get_id_from_pool():
     """
     Returns:
@@ -195,6 +188,9 @@ def get_id_from_pool():
 
 # Animations ==================================================================
 def add_argument(ev=None):
+    """
+    Add new argument table.
+    """
     ID = str(get_id_from_pool())
 
     template = doc["argument_template"].innerHTML
@@ -207,11 +203,17 @@ def add_argument(ev=None):
 
 
 def remove_argument(ev):
+    """
+    Remove argument table.
+    """
     if len(get_list_of_arguments()) > 1:
         arg_from_target(ev.target).outerHTML = ""
 
 
 def move_argument_up(ev):
+    """
+    Switch two arguments.
+    """
     arg = arg_from_target(ev.target)
     arguments = get_list_of_arguments()
 
@@ -222,6 +224,9 @@ def move_argument_up(ev):
 
 
 def move_argument_down(ev):
+    """
+    Switch two arguments.
+    """
     arg = arg_from_target(ev.target)
     arguments = get_list_of_arguments()
 
@@ -231,11 +236,15 @@ def move_argument_down(ev):
             switch_values(arg, arguments[ioa + 1])
 
 
-# Main program ================================================================
+def select_to_text(ev):
+    """
+    Convert select with "custom" value to text input.
+    """
+    if ev.target.value == "custom":
+        ID = ev.target.id
+        ev.target.outerHTML = "<input type='text' name='type' id='%s' />" % ID
+
+
+# Main script =================================================================
 add_argument()
 add_removable_help(doc.get(selector="input") + doc.get(selector="textarea"))
-
-
-# debug =======================================================================
-# doc["output"].value = str(get_list_of_arguments())
-# doc["output"].value += str()
