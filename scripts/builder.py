@@ -125,7 +125,8 @@ class Argument(ArgumentCommon):
             "default",
             "type",
             "choices",
-            "required"
+            "required",
+            "nargs"
         ]
 
         self._non_str_defaults = {
@@ -159,7 +160,7 @@ class Argument(ArgumentCommon):
         return super(Argument, self)._filtered_dict()
 
 
-class Argparse:  # TODO: check how many times is updated called
+class Argparse:  # TODO: check how many times is update called
     def __init__(self):
         self.argparse = ArgumentParser()
         self.arguments = []
