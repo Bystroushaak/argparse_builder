@@ -7,21 +7,7 @@ from browser import document as doc
 from browser import html
 
 # Variables ===================================================================
-ARG_PARAMS = [  # TODO: remove? It is not really usefull.
-    "flag",
-    "name",
-    "action",
-    "nargs",
-    "const",
-    "default",
-    "type",
-    "choices",
-    "required",
-    "metavar",
-    "dest",
-    "help"
-]
-_ARG_COUNTER = 0  # Increment only counter used as pool for ID / new arguments
+_ARG_COUNTER = range(100000).__iter__()  # argument table ID pool
 
 
 # Functions & objects =========================================================
@@ -168,9 +154,7 @@ def get_id_from_pool():
     Returns:
         int: Incremented ID from previous call.
     """
-    global _ARG_COUNTER
-    _ARG_COUNTER += 1
-    return _ARG_COUNTER
+    return _ARG_COUNTER.__next__()
 
 
 # Animations ==================================================================
