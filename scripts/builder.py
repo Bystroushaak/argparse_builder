@@ -140,6 +140,9 @@ class Argument(ArgumentCommon):
     def update(self):
         # read dynamically all arguments
         for item in self._arguments:
+            if item.type == "button":
+                continue
+
             value = item.value
             arg_name = item.id.split("_")[-1]
 
