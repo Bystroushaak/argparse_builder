@@ -23,11 +23,18 @@ def add_callbacks(ID):
     doc[ID + "_argument_button_rm"].bind("click", remove_argument)
     doc[ID + "_argument_button_up"].bind("click", move_argument_up)
     doc[ID + "_argument_button_down"].bind("click", move_argument_down)
+    doc[ID + "_argument_type"].bind("change", select_to_string)
 
     arg = arg_from_id(ID)
     add_removable_help(
         arg.get(selector="input") + arg.get(selector="textarea")
     )
+
+
+def select_to_string(ev):
+    if ev.target.value == "custom":
+        ID = ev.target.id
+        ev.target.outerHTML = "<input type='text' name='type' id='%s' />" % ID
 
 
 def add_removable_help(clickable):
@@ -139,14 +146,43 @@ def switch_values(arg1, arg2):
         arg1 (HTML element): First element.
         arg2 (HTML element): Second element.
     """
-    tag_pool = ["input", "textarea", "select"]
+    # I've tried to rewrite this to map, but writing elements selectors
+    # explicitly makes it MUCH more faster (like 0.1s vs 2s)
     items = zip(
-        sum(map(lambda x: arg1.get(selector=x), tag_pool), []),
-        sum(map(lambda x: arg2.get(selector=x), tag_pool), []),
+        sorted(
+            arg1.get(selector="textarea") +
+            arg1.get(selector="input") +
+            arg1.get(selector="select"),
+            key=lambda x: x.id
+        ),
+        sorted(
+            arg2.get(selector="textarea") +
+            arg2.get(selector="input") +
+            arg2.get(selector="select"),
+            key=lambda x: x.id
+        )
     )
 
     for item1, item2 in items:
+        # switch whole elements for different kinds of inputs (select vs text)
+        if item1.nodeName != item2.nodeName:
+            # save values
+            v1, v2 = item1.value, item2.value
+
+            # switch ID
+            item1.id, item2.id = item2.id, item1.id
+
+            # switch elements
+            item1.outerHTML, item2.outerHTML = item2.outerHTML, item1.outerHTML
+
+            # restore saved values
+            doc[item1.id].value, doc[item2.id].value = v1, v2
+            continue
+
+        # elements of same type switches just titles and values
         item1.value, item2.value = item2.value, item1.value
+        item1.title, item2.title = item2.title, item1.title
+
 
 
 def get_id_from_pool():
