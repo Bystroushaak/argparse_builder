@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(
     $parameters
 )
 $arguments
-args = parser.parser_args()
+args = parser.parse_args()
 
 """
 
