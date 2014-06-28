@@ -28,6 +28,7 @@ ARG_TEMPLATE = """parser.add_argument(
 class ArgumentCommon(object):
     def __init__(self, ):
         self._non_str = []
+        self._non_key = []
         self._template = ""
 
     def _filtered_dict(self):
@@ -44,22 +45,23 @@ class ArgumentCommon(object):
             if val is None :
                 continue
 
+
             line = str(key) + "="
+            if str(key) in self._non_key:
+                line = ""
             val = str(val)
 
             # don't escape native values
-            if key in self._non_str:
-                line += val
-            else:
-                val = val.replace(r"\\", r"\\")
+            quote = ""
+            if not key in self._non_str:
+                val = val.replace(r"\\", r"\\")  # don't even ask
 
                 # handle multiline strings
                 quote = '"'
                 if "\n" in val:
                     quote = quote * 3
 
-                line += quote + val + quote
-
+            line += quote + val + quote
             out.append(line)
 
         return out
@@ -89,6 +91,7 @@ class ArgumentParser(ArgumentCommon):
             "prog",
             "add_help"
         ]
+        self._non_key = []
 
         self._prefix = "ArgumentParser_"
         self._template = ARG_PARSER_TEMPLATE
@@ -134,6 +137,11 @@ class Argument(ArgumentCommon):
             "action": "store",
             "required": False
         }
+
+        self._non_key = [
+            "flag",
+            "name"
+        ]
 
         self._template = ARG_TEMPLATE
 
