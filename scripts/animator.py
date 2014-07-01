@@ -24,6 +24,7 @@ def add_callbacks(ID):
     doc[ID + "_argument_button_up"].bind("click", move_argument_up)
     doc[ID + "_argument_button_down"].bind("click", move_argument_down)
     doc[ID + "_argument_type"].bind("change", select_to_text)
+    doc[ID + "_argument_action"].bind("change", disable_other_inputs)
 
     arg = arg_from_id(ID)
     add_removable_help(
@@ -107,6 +108,10 @@ def arg_from_target(target):
         HTML element: `argument` table containing given `target`.
     """
     return arg_from_id(id_from_target(target))
+
+
+def input_from_type_id(ID, el_type):
+    return doc[ID + "_argument_" + el_type]
 
 
 def index_of_argument(arg, args=None):
@@ -243,6 +248,27 @@ def select_to_text(ev):
     if ev.target.value == "custom":
         ID = ev.target.id
         ev.target.outerHTML = "<input type='text' name='type' id='%s' />" % ID
+
+
+def disable_other_inputs(ev):
+    def set_diabled(items, state):
+        for item in items:
+            input_from_type_id(ID, item).disabled = state
+
+    ID = id_from_target(ev.target)
+    bool_switches = [
+        "type",
+        "const",
+        "nargs",
+        "choices",
+        "default",
+        "metavar"
+    ]
+
+    if ev.target.value in ["store_true", "store_false", "help", "version"]:
+        set_diabled(bool_switches, True)
+    else:
+        set_diabled(bool_switches, False)
 
 
 # Main script =================================================================
