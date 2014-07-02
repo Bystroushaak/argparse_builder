@@ -6,8 +6,7 @@
 from browser import document as doc
 from browser import html
 
-# Variables ===================================================================
-_ARG_COUNTER = range(100000).__iter__()  # argument table ID pool
+import argtools
 
 
 # Functions & objects =========================================================
@@ -26,7 +25,7 @@ def add_callbacks(ID):
     doc[ID + "_argument_type"].bind("change", select_to_text)
     doc[ID + "_argument_action"].bind("change", disable_other_inputs)
 
-    arg = arg_from_id(ID)
+    arg = argtools.arg_from_id(ID)
     add_removable_help(
         arg.get(selector="input") + arg.get(selector="textarea")
     )
@@ -68,50 +67,6 @@ def get_list_of_arguments():
             docs
         )
     )
-
-
-def id_from_target(target):
-    """
-    Return `ID` number from given target.
-
-    Args:
-        target (HTML element): DOM node with .id property in format id_rest.
-
-    Returns:
-        str: ID number in string (I don't really need int).
-    """
-    return target.id.split("_")[0]
-
-
-def arg_from_id(ID):
-    """
-    Return argument matching given ID.
-
-    Args:
-        ID (str): ID used to search in DOM
-
-    Returns:
-        HTML element: Matching element.
-    """
-    return doc[ID + "_argument"]
-
-
-def arg_from_target(target):
-    """
-    Get matching `argument` from subelement `target`.
-
-    Args:
-        target (HTML element): Button, input or any subelement in argument with
-                               proper ``.id``.
-
-    Returns:
-        HTML element: `argument` table containing given `target`.
-    """
-    return arg_from_id(id_from_target(target))
-
-
-def input_from_type_id(ID, el_type):
-    return doc[ID + "_argument_" + el_type]
 
 
 def index_of_argument(arg, args=None):
@@ -183,20 +138,12 @@ def switch_values(arg1, arg2):
         item1.title, item2.title = item2.title, item1.title
 
 
-def get_id_from_pool():
-    """
-    Returns:
-        int: Incremented ID from previous call.
-    """
-    return _ARG_COUNTER.__next__()
-
-
 # Animations ==================================================================
 def add_argument(ev=None):
     """
     Add new argument table.
     """
-    ID = str(get_id_from_pool())
+    ID = str(argtools.get_id_from_pool())
 
     template = doc["argument_template"].innerHTML
 
@@ -212,14 +159,14 @@ def remove_argument(ev):
     Remove argument table.
     """
     if len(get_list_of_arguments()) > 1:
-        arg_from_target(ev.target).outerHTML = ""
+        argtools.arg_from_target(ev.target).outerHTML = ""
 
 
 def move_argument_up(ev):
     """
     Switch two arguments.
     """
-    arg = arg_from_target(ev.target)
+    arg = argtools.arg_from_target(ev.target)
     arguments = get_list_of_arguments()
 
     if len(arguments) > 1:
@@ -232,7 +179,7 @@ def move_argument_down(ev):
     """
     Switch two arguments.
     """
-    arg = arg_from_target(ev.target)
+    arg = argtools.arg_from_target(ev.target)
     arguments = get_list_of_arguments()
 
     if len(arguments) > 1:
@@ -251,12 +198,19 @@ def select_to_text(ev):
 
 
 def disable_other_inputs(ev):
-    def set_diabled(items, state):
+    def set_diabled(ID, items, state):
         for item in items:
-            input_from_type_id(ID, item).disabled = state
+            argtools.input_from_type_id(ID, item).disabled = state
 
-    ID = id_from_target(ev.target)
+    ID = argtools.id_from_target(ev.target)
     bool_switches = [
+        "count",
+        "store_true",
+        "store_false",
+        "help",
+        "version"
+    ]
+    bool_disables = [
         "type",
         "const",
         "nargs",
@@ -265,10 +219,10 @@ def disable_other_inputs(ev):
         "metavar"
     ]
 
-    if ev.target.value in ["store_true", "store_false", "help", "version"]:
-        set_diabled(bool_switches, True)
+    if ev.target.value in bool_switches:
+        set_diabled(ID, bool_disables, True)
     else:
-        set_diabled(bool_switches, False)
+        set_diabled(ID, bool_disables, False)
 
 
 # Main script =================================================================
