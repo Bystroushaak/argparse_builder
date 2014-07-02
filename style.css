@@ -9,7 +9,7 @@ body {
     margin-top: 1em;
     margin-bottom: 1em;
 
-    width: 900px;
+    width: 57em; /* ~900px */
     padding: 1em;
     background-color: #FFFFFF;
     
@@ -37,7 +37,6 @@ fieldset p {
 
 fieldset {
     border: 0;
-    /*border-top: 1px solid lightgray;*/
 }
 
 fieldset legend {
@@ -57,8 +56,8 @@ fieldset p input {
     width: auto;
 }
 
-.add_rm_button {
-    width: 40px;
+.buttons {
+    width: 0.8em;
     font-size: 3em;
 
     margin: 0;
@@ -80,7 +79,12 @@ fieldset p input {
 
 .argument_table {
     border: 1px solid lightgray;
-    margin-bottom: 10px;
+    margin-bottom: 1em;
+}
+
+.argument_table input[type="button"] {
+    height: 2.9em;
+    font-weight: bold;
 }
 
 #argument_template {
@@ -102,5 +106,5 @@ table {
 }
 
 #output {
-    min-height: 600px;
+    min-height: 40em;
 }
