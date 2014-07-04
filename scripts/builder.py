@@ -3,8 +3,13 @@
 # Interpreter version: python 2.7
 #
 # Imports =====================================================================
+from browser import html
 from browser import document as doc
-import animator
+
+from collections import OrderedDict
+
+# import animator
+import argtools
 
 
 # Variables ===================================================================
@@ -25,112 +30,78 @@ ARG_TEMPLATE = """parser.add_argument(
 
 
 # Functions & objects =========================================================
-class ArgumentCommon(object):
-    def __init__(self, ):
-        self._non_str = []
-        self._non_key = []
-        self._template = ""
+class ArgInput(object):
+    def __init__(self, element):
+        self.ID = element.id.split("_")[0]
+        self.name = element.id.split("_")[-1]
+        self.element = element
 
-    def _filtered_dict(self):
-        return dict(
-            filter(
-                lambda x: not x[0].startswith("_"),
-                self.__dict__.items()
-            )
-        )
+        if self.element.value == "":
+            self.element.value = self.element.title
 
-    def _dict_to_params(self):
-        out = []
-        for key, val in self._filtered_dict().items():
-            if val is None :
-                continue
+        def input_remove_help(ev):
+            if ev.target.value == ev.target.title:
+                ev.target.value = ""
 
+        def input_add_help(ev):
+            if ev.target.value == "":
+                ev.target.value = ev.target.title
 
-            line = str(key) + "="
-            if str(key) in self._non_key:
-                line = ""
-            val = str(val)
+        self.is_text_type = (element.type == "text" or element.nodeName == "TEXTAREA")
 
-            # don't escape native values
-            quote = ""
-            if not key in self._non_str:
-                val = val.replace(r"\\", r"\\")  # don't even ask
+        if self.is_text_type:
+            element.bind("focus", input_remove_help)
+            element.bind("blur", input_add_help)
 
-                # handle multiline strings
-                quote = '"'
-                if "\n" in val:
-                    quote = quote * 3
+    @property
+    def value(self):
+        # selects
+        if not self.is_text_type and \
+           self.element.value == self.element._default:
+            return None
 
-            line += quote + val + quote
-            out.append(line)
+        if self.element.type == "checkbox":
+            value = self.element.checked
 
-        return out
+            if self.element._default == str(value):
+                return None
+
+            return value
+
+        if self.element.value != self.element.title:
+            if self.element._non_str:
+                return self.element.value
+
+            return '"' + self.element.value + '"'  # TODO: long lines / mutiple lines
+
+        return None
+
+    @value.setter
+    def value(self, new_val):
+        self.element.value = new_val
 
     def __str__(self):
-        params = self._dict_to_params()
+        if self.element._non_key:
+            return str(self.value)
 
-        if not params:
-            return ""
-
-        return self._template.replace(
-            "$parameters",
-            ",\n    ".join(params)
-        )
+        return self.name + "=" + str(self.value)
 
 
-class ArgumentParser(ArgumentCommon):
+class Argument(object):
     def __init__(self):
-        self.prog = None
-        self.usage = None
-        self.description = None
-        self.epilog = None
-        self.add_help = None
+        self.ID = str(argtools.get_id_from_pool())
+        element = self._add_html_repr()
 
-        # don't quote following parameters;
-        self._non_str = [
-            "prog",
-            "add_help"
-        ]
-        self._non_key = []
-
-        self._prefix = "ArgumentParser_"
-        self._template = ARG_PARSER_TEMPLATE
-
-    def get_dict(self):
-        return self._filtered_dict()
-
-    def update(self):
-        for key in self.get_dict().keys():
-            item = doc[self._prefix + key]
-            value = item.value
-
-            # default values == None
-            if value == item.title or value.strip() == "":
-                value = None
-
-            if item.type == "checkbox":
-                value = item.checked
-
-            self.__setattr__(key, value)
-
-
-class Argument(ArgumentCommon):
-    def __init__(self, element):
-        tag_pool = ["input", "textarea", "select"]
-        self._arguments = sum(
-            map(lambda x: element.get(selector=x), tag_pool),
-            []
+        arguments = element.get(selector="input")
+        arguments = list(filter(lambda x: x.type != "button", arguments))
+        arguments += element.get(selector="select")
+        arguments += element.get(selector="textarea")
+        self.inputs = OrderedDict(
+            map(
+                lambda x: (x.id.split("_")[-1], ArgInput(x)),
+                sum(arguments, [])
+            )
         )
-
-        # don't quote following parameters;
-        self._non_str = [
-            "const",
-            "default",
-            "type",
-            "choices",
-            "required",
-            "nargs"
-        ]
 
         self._non_str_defaults = {
             "type": "str",
@@ -138,65 +109,56 @@ class Argument(ArgumentCommon):
             "required": False
         }
 
-        self._non_key = [
-            "flag",
-            "name"
-        ]
+    def _add_html_repr(self):
+        """
+        Add new argument table.
+        """
+        template = doc["argument_template"].innerHTML
 
-        self._template = ARG_TEMPLATE
+        table = html.TABLE(id=self.ID + "_argument", Class="argument_table")
+        table.html = template.replace("$ID", self.ID)
+        doc["arguments"] <= table
 
-    def update(self):
-        # read dynamically all arguments
-        for item in self._arguments:
-            if item.type == "button":
-                continue
+        # add_callbacks(ID)
+        return table
 
-            value = item.value
-            arg_name = item.id.split("_")[-1]
+    def remove(self):
+        doc[self.ID + "_argument"].outerHTML = ""
 
-            # default values == None
-            if value == item.title or value.strip() == "":
-                value = None
-
-            if item.type == "checkbox":
-                value = item.checked
-
-            if self._non_str_defaults.get(arg_name, False) == value:
-                value = None
-
-            self.__setattr__(arg_name, value)
-
-    def _filtered_dict(self):
-        self.update()
-        return super(Argument, self)._filtered_dict()
-
-
-class Argparse:  # TODO: check how many times is update called
-    def __init__(self):
-        self.argparse = ArgumentParser()
-        self.arguments = []
-
-    def update(self):
-        self.argparse.update()
-
-        self.arguments = map(
-            lambda x: Argument(x),
-            animator.get_list_of_arguments()
+    def __str__(self):
+        vals = map(
+            lambda x: str(x),
+            filter(
+                lambda x: x.value is not None,
+                self.inputs.values()
+            )
         )
 
-    def __str__(self, ev=None):
-        self.update()
+        if len(list(vals)) == 0:
+            return ""
 
-        return str(self.argparse).replace(
-            "$arguments",
-            "\n".join(map(lambda x: str(x), self.arguments))
+        return ARG_TEMPLATE.replace(
+            "$parameters",
+            "\t" + "\n\t".join(vals)
         )
+
+
+
 
 
 # Main program ================================================================
-a = Argparse()
+# a = Argparse()
 
-def set_txt(ev=None):
-    doc["output"].value = a.__str__()
+# def set_txt(ev=None):
+#     doc["output"].value = a.__str__()
 
-doc["output"].bind("click", set_txt)
+# doc["output"].bind("click", set_txt)
+
+# debug
+from browser import alert
+
+a = Argument()
+alert(a.inputs)
+alert(str(a))
+# a.remove()
+# a = Argument()
