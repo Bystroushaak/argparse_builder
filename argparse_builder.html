@@ -66,19 +66,19 @@
                 <span class="descr">
                     <a href="https://docs.python.org/2.7/library/argparse.html#name-or-flags">flag</a>:
                 </span>
-                <input id="$ID_argument_flag" type="text" title="Short flag like -h.">
+                <input id="$ID_argument_flag" title="Short flag like -h." type="text" _non_str="" _non_key="true" _default="">
             </td>
             <td>
                 <span class="descr">
                     <a href="https://docs.python.org/2.7/library/argparse.html#name-or-flags">name</a>:
                 </span>
-                <input id="$ID_argument_name" type="text" title="Long flag like --help.">
+                <input id="$ID_argument_name" title="Long flag like --help." type="text" _non_str="" _non_key="true" _default="">
             </td>
             <td>
                 <span class="descr">
                     <a href="https://docs.python.org/2.7/library/argparse.html#action">action</a>:
                 </span>
-                <select name="action" id="$ID_argument_action" >
+                <select name="action" id="$ID_argument_action" _non_str="" _non_key="" _default="store">
                     <option value="store" selected="selected">store</option>
                     <option value="store_const">store_const</option>
                     <option value="store_true">store_true</option>
@@ -96,19 +96,19 @@
                 <span class="descr">
                     <a href="https://docs.python.org/2.7/library/argparse.html#nargs">nargs</a>:
                 </span>
-                <input id="$ID_argument_nargs" type="text" title="N/?/*/+/argparse.REMAINDER">
+                <input id="$ID_argument_nargs" title="N/?/*/+/argparse.REMAINDER" type="text" _non_str="true" _non_key="" _default="">
             </td>
             <td>
                 <span class="descr">
                     <a href="https://docs.python.org/2.7/library/argparse.html#const">const</a>:
                 </span>
-                <input id="$ID_argument_const" type="text" title="Constant value for action.">
+                <input id="$ID_argument_const" title="Constant value for action." type="text" _non_str="true" _non_key="" _default="">
             </td>
             <td>
                 <span class="descr">
                     <a href="https://docs.python.org/2.7/library/argparse.html#default">default</a>:
                 </span>
-                <input id="$ID_argument_default" type="text" title="Default value. Use quotes for string.">
+                <input id="$ID_argument_default" title="Default value. Use quotes for string." type="text" _non_str="true" _non_key="" _default="">
             </td>
         </tr>
 
@@ -116,7 +116,7 @@
             <td><span class="descr">
                 <a href="https://docs.python.org/2.7/library/argparse.html#type">type</a>:
             </span>
-                <select name="type" id="$ID_argument_type">
+                <select name="type" id="$ID_argument_type" _non_str="" _non_key="" _default="str">
                     <option value="int">int</option>
                     <option value="float">float</option>
                     <option value="long">long</option>
@@ -128,13 +128,13 @@
                 <span class="descr">
                     <a href="https://docs.python.org/2.7/library/argparse.html#choices">choices</a>:
                 </span>
-                <input id="$ID_argument_choices" type="text" title="A container of the allowable values for the argument.">
+                <input id="$ID_argument_choices" title="A container of the allowable values for the argument." type="text" _non_str="true" _non_key="" _default="">
             </td>
             <td>
                 <span class="descr">
                     <a href="https://docs.python.org/2.7/library/argparse.html#required">required</a>:
                 </span>
-                <input id="$ID_argument_required" type="checkbox">
+                <input id="$ID_argument_required" type="checkbox" _non_str="true" _non_key="" _default="False">
             </td>
         </tr>
 
@@ -143,18 +143,18 @@
                 <span class="descr">
                     <a href="https://docs.python.org/2.7/library/argparse.html#metavar">metavar</a>:
                 </span>
-                <input id="$ID_argument_metavar" type="text" title="Specify alternative data example in help.">
+                <input id="$ID_argument_metavar" title="Specify alternative data example in help." type="text" _non_str="" _non_key="" _default="">
             </td>
             <td>
                 <span class="descr">
                     <a href="https://docs.python.org/2.7/library/argparse.html#dest">dest</a>:
                 </span>
-                <input id="$ID_argument_dest" type="text" title="Name of variable in parsed object.">
+                <input id="$ID_argument_dest" title="Name of variable in parsed object." type="text" _non_str="" _non_key="" _default="">
             </td>
             <td></td>
         </tr>
     </table>
-    <textarea id="$ID_argument_help" title="Help (a brief description of what the argument does). ID: $ID"></textarea>
+    <textarea id="$ID_argument_help" title="Help (a brief description of what the argument does). ID: $ID" _non_str="" _non_key="" _default=""></textarea>
   </td>
  </tr>
 </table>
