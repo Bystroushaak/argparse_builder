@@ -39,19 +39,30 @@ class ArgInput(object):
         if self.element.value == "":
             self.element.value = self.element.title
 
-        def input_remove_help(ev):
-            if ev.target.value == ev.target.title:
-                ev.target.value = ""
-
-        def input_add_help(ev):
-            if ev.target.value == "":
-                ev.target.value = ev.target.title
-
         self.is_text_type = (element.type == "text" or element.nodeName == "TEXTAREA")
 
         if self.is_text_type:
-            element.bind("focus", input_remove_help)
-            element.bind("blur", input_add_help)
+            element.bind("focus", self.input_remove_help)
+            element.bind("blur", self.input_add_help)
+        elif element.nodeName == "SELECT":
+            element.bind("change", self.on_change)
+
+    def on_change(self, ev):
+        if self.name == "type" and ev.target.value == "custom":
+            new_html = '<input id="%s" type="text" _non_str="true" ' % self.ID
+            new_html += '_non_key="" _default="" />'
+            ev.target.outerHTML = new_html
+
+            self.is_text_type = True
+            self.element = doc[self.ID]
+
+    def input_remove_help(self, ev):
+        if ev.target.value == ev.target.title:
+            ev.target.value = ""
+
+    def input_add_help(self, ev):
+        if ev.target.value == "":
+            ev.target.value = ev.target.title
 
     @property
     def value(self):
@@ -103,12 +114,6 @@ class Argument(object):
             )
         )
 
-        self._non_str_defaults = {
-            "type": "str",
-            "action": "store",
-            "required": False
-        }
-
     def _add_html_repr(self):
         """
         Add new argument table.
@@ -119,7 +124,6 @@ class Argument(object):
         table.html = template.replace("$ID", self.ID)
         doc["arguments"] <= table
 
-        # add_callbacks(ID)
         return table
 
     def remove(self):
@@ -145,8 +149,7 @@ class Argument(object):
 
 class ArgParser(object):
     def __init__(self):
-        self.arguments = {}
-
+        self.arguments = OrderedDict()
         self.add_argument()
 
     def bind_argument(self, argument):
@@ -171,25 +174,34 @@ class ArgParser(object):
         self.arguments[arg.ID] = arg
 
     def remove_argument(self, ev=None):
-        ID = ev.target.id.split("_")[0]
-        self.arguments[ID].remove()
-        del self.arguments[ID]
+        if len(self.arguments) > 1:
+            ID = ev.target.id.split("_")[0]
+            self.arguments[ID].remove()
+            del self.arguments[ID]
+
+    def __str__(self):
+        out = ""
+        for item in self.arguments.values():
+            out += item.__str__()
+
+        out = ARG_PARSER_TEMPLATE.replace("$arguments", out)
+
+        return out
 
 
 # Main program ================================================================
-# a = Argparse()
+a = ArgParser()
 
-# def set_txt(ev=None):
-#     doc["output"].value = a.__str__()
+def set_txt(ev=None):
+    doc["output"].value = a.__str__()
 
-# doc["output"].bind("click", set_txt)
+doc["output"].bind("click", set_txt)
 
 # debug
-from browser import alert
+# from browser import alert
 
 # a = Argument()
 # alert(a.inputs)
 # alert(str(a))
-a = ArgParser()
 # a.remove()
 # a = Argument()
