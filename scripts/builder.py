@@ -143,7 +143,37 @@ class Argument(object):
         )
 
 
+class ArgParser(object):
+    def __init__(self):
+        self.arguments = {}
 
+        self.add_argument()
+
+    def bind_argument(self, argument):
+        doc[argument.ID + "_argument_button_add"].bind(
+            "click",
+            self.add_argument
+        )
+        doc[argument.ID + "_argument_button_rm"].bind(
+            "click",
+            self.remove_argument
+        )
+        # doc[ID + "_argument_button_up"].bind("click", move_argument_up)
+        # doc[ID + "_argument_button_down"].bind("click", move_argument_down)
+
+    def new_argument(self):
+        arg = Argument()
+        self.bind_argument(arg)
+        return arg
+
+    def add_argument(self, ev=None):
+        arg = self.new_argument()
+        self.arguments[arg.ID] = arg
+
+    def remove_argument(self, ev=None):
+        ID = ev.target.id.split("_")[0]
+        self.arguments[ID].remove()
+        del self.arguments[ID]
 
 
 # Main program ================================================================
@@ -157,8 +187,9 @@ class Argument(object):
 # debug
 from browser import alert
 
-a = Argument()
-alert(a.inputs)
-alert(str(a))
+# a = Argument()
+# alert(a.inputs)
+# alert(str(a))
+a = ArgParser()
 # a.remove()
 # a = Argument()
