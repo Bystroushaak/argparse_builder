@@ -91,6 +91,9 @@ class ArgInput(object):
     def value(self, new_val):
         self.element.value = new_val
 
+    def switch(self, inp2):
+        # TODO: !
+
     def __str__(self):
         if self.element._non_key:
             return str(self.value)
@@ -101,12 +104,12 @@ class ArgInput(object):
 class Argument(object):
     def __init__(self):
         self.ID = str(argtools.get_id_from_pool())
-        element = self._add_html_repr()
+        self.element = self._add_html_repr()
 
-        arguments = element.get(selector="input")
+        arguments = self.element.get(selector="input")
         arguments = list(filter(lambda x: x.type != "button", arguments))
-        arguments += element.get(selector="select")
-        arguments += element.get(selector="textarea")
+        arguments += self.element.get(selector="select")
+        arguments += self.element.get(selector="textarea")
         self.inputs = OrderedDict(
             map(
                 lambda x: (x.id.split("_")[-1], ArgInput(x)),
@@ -128,6 +131,11 @@ class Argument(object):
 
     def remove(self):
         doc[self.ID + "_argument"].outerHTML = ""
+
+    def switch(self, arg2):
+
+
+        # TODO: !
 
     def __str__(self):
         vals = map(
@@ -161,8 +169,25 @@ class ArgParser(object):
             "click",
             self.remove_argument
         )
-        # doc[ID + "_argument_button_up"].bind("click", move_argument_up)
-        # doc[ID + "_argument_button_down"].bind("click", move_argument_down)
+        doc[argument.ID + "_argument_button_up"].bind(
+            "click",
+            self.move_arg_up
+        )
+        doc[argument.ID + "_argument_button_down"].bind(
+            "click",
+            self.move_arg_down
+        )
+
+    def move_arg_up(self, ev=None):
+        ID = ev.target.id.split("_")[0]
+        keys = self.arguments.keys()
+        ioa = keys.index(ID)
+
+        if len(self.arguments) > 1 and ioa > 0:
+            arg1 = self.arguments[keys[ioa]]
+            arg2 = self.arguments[keys[ioa - 1]]
+
+            arg1.switch(arg2)
 
     def new_argument(self):
         arg = Argument()
@@ -178,9 +203,6 @@ class ArgParser(object):
             ID = ev.target.id.split("_")[0]
             self.arguments[ID].remove()
             del self.arguments[ID]
-
-    def switch(self, arg2):
-        pass
 
     def __str__(self):
         out = ""
