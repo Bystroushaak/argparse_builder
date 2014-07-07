@@ -179,6 +179,9 @@ class ArgParser(object):
             self.arguments[ID].remove()
             del self.arguments[ID]
 
+    def switch(self, arg2):
+        pass
+
     def __str__(self):
         out = ""
         for item in self.arguments.values():
