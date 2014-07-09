@@ -39,8 +39,6 @@ class ArgInput(object):
         if self.element.value == "":
             self.element.value = self.element.title
 
-        self.is_text_type = (element.type == "text" or element.nodeName == "TEXTAREA")
-
         if self.is_text_type:
             element.bind("focus", self.input_remove_help)
             element.bind("blur", self.input_add_help)
@@ -49,12 +47,12 @@ class ArgInput(object):
 
     def on_change(self, ev):
         if self.name == "type" and ev.target.value == "custom":
-            new_html = '<input id="%s" type="text" _non_str="true" ' % self.ID
+            ID = self.element.id
+            new_html = '<input id="%s" type="text" _non_str="true" ' % ID
             new_html += '_non_key="" _default="" />'
             ev.target.outerHTML = new_html
 
-            self.is_text_type = True
-            self.element = doc[self.ID]
+            self.element = doc[ID]
 
     def input_remove_help(self, ev):
         if ev.target.value == ev.target.title:
@@ -87,12 +85,38 @@ class ArgInput(object):
 
         return None
 
+    def get_raw_value(self):
+        if self.element.type == "checkbox":
+            return self.element.checked
+
+        return self.element.value
+
     @value.setter
     def value(self, new_val):
-        self.element.value = new_val
+        if self.element.type == "checkbox":
+            self.element.checked = new_val
+        else:
+            self.element.value = new_val
+
+    @property
+    def is_text_type(self):
+        return self.element.type == "text" or self.element.nodeName == "TEXTAREA"
 
     def switch(self, inp2):
-        # TODO: !
+        inp1 = self
+
+        if inp1.element.nodeName != inp2.element.nodeName:
+            val1, val2 = inp1.get_raw_value(), inp2.get_raw_value()
+            inp1.element.id, inp2.element.id = inp2.element.id, inp1.element.id
+            inp1.element.outerHTML, inp2.element.outerHTML = (
+                inp2.element.outerHTML,
+                inp1.element.outerHTML
+            )
+            inp1.element = doc[inp1.ID + "_argument_" + inp1.name]
+            inp2.element = doc[inp2.ID + "_argument_" + inp2.name]
+            inp1.value, inp2.value = val2, val1
+        else:
+            inp1.value, inp2.value = inp2.get_raw_value(), inp1.get_raw_value()
 
     def __str__(self):
         if self.element._non_key:
@@ -133,9 +157,10 @@ class Argument(object):
         doc[self.ID + "_argument"].outerHTML = ""
 
     def switch(self, arg2):
+        assert isinstance(arg2, Argument)
 
-
-        # TODO: !
+        for key in self.inputs.keys():
+            self.inputs[key].switch(arg2.inputs[key])
 
     def __str__(self):
         vals = map(
@@ -178,14 +203,25 @@ class ArgParser(object):
             self.move_arg_down
         )
 
-    def move_arg_up(self, ev=None):
+    def move_arg_up(self, ev):
         ID = ev.target.id.split("_")[0]
-        keys = self.arguments.keys()
+        keys = list(self.arguments.keys())
         ioa = keys.index(ID)
 
         if len(self.arguments) > 1 and ioa > 0:
             arg1 = self.arguments[keys[ioa]]
             arg2 = self.arguments[keys[ioa - 1]]
+
+            arg1.switch(arg2)
+
+    def move_arg_down(self, ev=None):
+        ID = ev.target.id.split("_")[0]
+        keys = list(self.arguments.keys())
+        ioa = keys.index(ID)
+
+        if len(self.arguments) > 1 and ioa < len(self.arguments) - 1:
+            arg1 = self.arguments[keys[ioa]]
+            arg2 = self.arguments[keys[ioa + 1]]
 
             arg1.switch(arg2)
 
@@ -223,7 +259,7 @@ def set_txt(ev=None):
 doc["output"].bind("click", set_txt)
 
 # debug
-# from browser import alert
+from browser import alert
 
 # a = Argument()
 # alert(a.inputs)
