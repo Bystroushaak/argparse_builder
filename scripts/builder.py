@@ -16,9 +16,7 @@ import argtools
 ARG_PARSER_TEMPLATE = """import argparse
 
 # ...
-parser = argparse.ArgumentParser(
-    $parameters
-)
+parser = argparse.ArgumentParser($parameters)
 $arguments
 args = parser.parse_args()
 
@@ -228,27 +226,83 @@ class Argument(object):
 class ArgParser(object):
     def __init__(self):
         self.arguments = OrderedDict()
-        self.add_argument()
+        self.add_argument_callback()
+
+        # parse all inputs belonging to the argparser objects
+        self.element = doc["argument_parser"]
+        arguments = self.element.get(selector="input")
+        arguments += self.element.get(selector="textarea")
+        self.inputs = OrderedDict(
+            map(
+                lambda x: (x.id.split("_")[-1], ArgInput(x, self)),
+                sum(arguments, [])
+            )
+        )
+
+    def new_argument(self):
+        """
+        Create new :class:`Argument` object and bind events to the buttons.
+
+        Returns:
+            Argument object: Created object.
+        """
+        arg = Argument()
+        self.bind_argument(arg)
+        return arg
 
     def bind_argument(self, argument):
+        """
+        Bind buttons in `argument` object to callbacks methods in this object.
+        """
         doc[argument.ID + "_argument_button_add"].bind(
             "click",
-            self.add_argument
+            self.add_argument_callback
         )
         doc[argument.ID + "_argument_button_rm"].bind(
             "click",
-            self.remove_argument
+            self.remove_argument_callback
         )
         doc[argument.ID + "_argument_button_up"].bind(
             "click",
-            self.move_arg_up
+            self.move_arg_up_callback
         )
         doc[argument.ID + "_argument_button_down"].bind(
             "click",
-            self.move_arg_down
+            self.move_arg_down_callback
         )
 
-    def move_arg_up(self, ev):
+    def add_argument_callback(self, ev=None):
+        """
+        Add new argument into HTML representation and internal dict.
+
+        Note:
+            This method is called asynchronously, when the button is pressed.
+        """
+        arg = self.new_argument()
+        self.arguments[arg.ID] = arg
+
+    def remove_argument_callback(self, ev=None):
+        """
+        Remove argument from HTML representation and internal dict.
+
+        ID of the argument is parsed from `ev` parameter.
+
+        Note:
+            This method is called asynchronously, when the button is pressed.
+        """
+        if len(self.arguments) > 1:
+            ID = ev.target.id.split("_")[0]
+            self.arguments[ID].remove()
+            del self.arguments[ID]
+
+    def move_arg_up_callback(self, ev):
+        """
+        Switch two arguments - move the argument where the button was pressed
+        down.
+
+        Note:
+            This method is called asynchronously, when the button is pressed.
+        """
         ID = ev.target.id.split("_")[0]
         keys = list(self.arguments.keys())
         ioa = keys.index(ID)
@@ -259,7 +313,14 @@ class ArgParser(object):
 
             arg1.switch(arg2)
 
-    def move_arg_down(self, ev=None):
+    def move_arg_down_callback(self, ev=None):
+        """
+        Switch two arguments - move the argument where the button was pressed
+        down.
+
+        Note:
+            This method is called asynchronously, when the button is pressed.
+        """
         ID = ev.target.id.split("_")[0]
         keys = list(self.arguments.keys())
         ioa = keys.index(ID)
@@ -270,29 +331,31 @@ class ArgParser(object):
 
             arg1.switch(arg2)
 
-    def new_argument(self):
-        arg = Argument()
-        self.bind_argument(arg)
-        return arg
-
-    def add_argument(self, ev=None):
-        arg = self.new_argument()
-        self.arguments[arg.ID] = arg
-
-    def remove_argument(self, ev=None):
-        if len(self.arguments) > 1:
-            ID = ev.target.id.split("_")[0]
-            self.arguments[ID].remove()
-            del self.arguments[ID]
-
     def __str__(self):
-        out = ""
+        # read value of all inputs in this object
+        vals = map(
+            lambda x: str(x),
+            filter(
+                lambda x: x.value is not None,  # pick only inputs with value
+                self.inputs.values()
+            )
+        )
+
+        # add \n\t only if there are used inputs
+        inp_string = "\n\t".join(vals)
+        if inp_string:
+            inp_string = "\n\t" + inp_string + "\n"
+
+        # put inputs to template
+        out = ARG_PARSER_TEMPLATE.replace("$parameters", inp_string)
+
+        # convert arguments to strings
+        arguments = ""
         for item in self.arguments.values():
-            out += item.__str__()
+            arguments += item.__str__()
 
-        out = ARG_PARSER_TEMPLATE.replace("$arguments", out)
-
-        return out
+        # put arguments to template
+        return out.replace("$arguments", arguments)
 
 
 # Main program ================================================================
@@ -302,12 +365,3 @@ def set_txt(ev=None):
     doc["output"].value = a.__str__()
 
 doc["output"].bind("click", set_txt)
-
-# debug
-from browser import alert
-
-# a = Argument()
-# alert(a.inputs)
-# alert(str(a))
-# a.remove()
-# a = Argument()
