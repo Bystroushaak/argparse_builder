@@ -30,8 +30,43 @@ ARG_TEMPLATE = """parser.add_argument(
 
 
 # Functions & objects =========================================================
+def type_on_change_event(self, ev):
+    if ev.target.value == "custom":
+        ID = self.element.id
+        new_html = '<input id="%s" type="text" _non_str="true" ' % ID
+        new_html += '_non_key="" _default="" />'
+        ev.target.outerHTML = new_html
+
+        self.element = doc[ID]
+
+
+def action_on_change_event(self, ev):
+    bool_switches = [
+        "count",
+        "store_true",
+        "store_false",
+        "help",
+        "version"
+    ]
+    bool_disables = [
+        "type",
+        "const",
+        "nargs",
+        "choices",
+        "default",
+        "metavar"
+    ]
+
+    disabled = (ev.target.value in bool_switches)
+    disabled_inputs = map(lambda x: self.parent.inputs[x], bool_disables)
+
+    for item in disabled_inputs:
+        item.disabled = disabled
+
+
 class ArgInput(object):
-    def __init__(self, element):
+    def __init__(self, element, parent):
+        self.parent = parent
         self.ID = element.id.split("_")[0]
         self.name = element.id.split("_")[-1]
         self.element = element
@@ -45,14 +80,16 @@ class ArgInput(object):
         elif element.nodeName == "SELECT":
             element.bind("change", self.on_change)
 
-    def on_change(self, ev):
-        if self.name == "type" and ev.target.value == "custom":
-            ID = self.element.id
-            new_html = '<input id="%s" type="text" _non_str="true" ' % ID
-            new_html += '_non_key="" _default="" />'
-            ev.target.outerHTML = new_html
+        self.on_change_events = {
+            "type": type_on_change_event,
+            "action": action_on_change_event
+        }
 
-            self.element = doc[ID]
+    def on_change(self, ev):
+        func = self.on_change_events.get(self.name)
+
+        if func:
+            func(self, ev)
 
     def input_remove_help(self, ev):
         if ev.target.value == ev.target.title:
@@ -102,6 +139,14 @@ class ArgInput(object):
     def is_text_type(self):
         return self.element.type == "text" or self.element.nodeName == "TEXTAREA"
 
+    @property
+    def disabled(self):
+        return self.element.disabled
+
+    @disabled.setter
+    def disabled(self, val):
+        self.element.disabled = val
+
     def switch(self, inp2):
         inp1 = self
 
@@ -136,7 +181,7 @@ class Argument(object):
         arguments += self.element.get(selector="textarea")
         self.inputs = OrderedDict(
             map(
-                lambda x: (x.id.split("_")[-1], ArgInput(x)),
+                lambda x: (x.id.split("_")[-1], ArgInput(x, self)),
                 sum(arguments, [])
             )
         )
