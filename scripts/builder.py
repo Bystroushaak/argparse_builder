@@ -8,11 +8,10 @@ from browser import document as doc
 
 from collections import OrderedDict
 
-# import animator
-import argtools
-
 
 # Variables ===================================================================
+_ARG_COUNTER = range(100000).__iter__()  # argument table ID pool
+
 ARG_PARSER_TEMPLATE = """import argparse
 
 # ...
@@ -28,6 +27,14 @@ ARG_TEMPLATE = """parser.add_argument(
 
 
 # Functions & objects =========================================================
+def get_id_from_pool():
+    """
+    Returns:
+        int: Incremented ID from previous call.
+    """
+    return _ARG_COUNTER.__next__()
+
+
 def type_on_change_event(self, ev):
     if ev.target.value == "custom":
         ID = self.element.id
@@ -170,7 +177,7 @@ class ArgInput(object):
 
 class Argument(object):
     def __init__(self):
-        self.ID = str(argtools.get_id_from_pool())
+        self.ID = str(get_id_from_pool())
         self.element = self._add_html_repr()
 
         arguments = self.element.get(selector="input")
@@ -186,7 +193,7 @@ class Argument(object):
 
     def _add_html_repr(self):
         """
-        Add new argument table.
+        Add HTML representation of the argument to the HTML page.
         """
         template = doc["argument_template"].innerHTML
 
@@ -197,15 +204,22 @@ class Argument(object):
         return table
 
     def remove(self):
+        """
+        Remove argument from HTML.
+        """
         doc[self.ID + "_argument"].outerHTML = ""
 
     def switch(self, arg2):
+        """
+        Switch all values in this Argument with `arg2`.
+        """
         assert isinstance(arg2, Argument)
 
         for key in self.inputs.keys():
             self.inputs[key].switch(arg2.inputs[key])
 
     def __str__(self):
+        # collect strings from all inputs
         vals = map(
             lambda x: str(x),
             filter(
