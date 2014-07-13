@@ -36,6 +36,10 @@ def get_id_from_pool():
 
 
 def type_on_change_event(self, ev):
+    """
+    This code switches select for input when user selects `Custom` in
+    `type` select element.
+    """
     if ev.target.value == "custom":
         ID = self.element.id
         new_html = '<input id="%s" type="text" _non_str="true" ' % ID
@@ -46,6 +50,9 @@ def type_on_change_event(self, ev):
 
 
 def action_on_change_event(self, ev):
+    """
+    Event raised when user changes value in `action` input.
+    """
     bool_switches = [
         "count",
         "store_true",
@@ -62,6 +69,7 @@ def action_on_change_event(self, ev):
         "metavar"
     ]
 
+    # enable/disable other inputs
     disabled = (ev.target.value in bool_switches)
     disabled_inputs = map(lambda x: self.parent.inputs[x], bool_disables)
 
@@ -81,37 +89,54 @@ class ArgInput(object):
             self.element.value = self.element.title
 
         if self.is_text_type:
-            element.bind("focus", self.input_remove_help)
-            element.bind("blur", self.input_add_help)
+            element.bind("focus", self.input_remove_help_callback)
+            element.bind("blur", self.input_add_help_callback)
         elif element.nodeName == "SELECT":
-            element.bind("change", self.on_change)
+            element.bind("change", self.on_change_callback)
 
         self.on_change_events = {
             "type": type_on_change_event,
             "action": action_on_change_event
         }
 
-    def on_change(self, ev):
-        func = self.on_change_events.get(self.name)
+    def on_change_callback(self, ev):
+        """
+        Callback called every time the select HTML element is changed.
+        """
+        func = self.on_change_events.get(self.name, None)
 
         if func:
             func(self, ev)
 
-    def input_remove_help(self, ev):
+    def input_remove_help_callback(self, ev):
+        """
+        Called when user clicks to the input/textarea element to remove help.
+        """
         if ev.target.value == ev.target.title:
             ev.target.value = ""
 
-    def input_add_help(self, ev):
+    def input_add_help_callback(self, ev):
+        """
+        Called every time user removes focus from input element to restere
+        help, if the input is blank.
+        """
         if ev.target.value == "":
             ev.target.value = ev.target.title
 
     @property
     def wrapped_value(self):
+        """
+        Property to wrap the internal raw value to string.
+
+        This is used for string serialization - some of the elements needs to
+        add quotes, some have default values and so on.
+        """
         # selects
         if not self.is_text_type and \
            self.element.value == self.element._default:
             return None
 
+        # checkboxes
         if self.element.type == "checkbox":
             value = self.element.checked
 
@@ -120,6 +145,7 @@ class ArgInput(object):
 
             return value
 
+        # text elements - textearea/input
         if self.element.value != self.element.title:
             if self.element._non_str.strip():
                 return self.element.value
@@ -130,6 +156,9 @@ class ArgInput(object):
 
     @property
     def value(self):
+        """
+        Property to access value of the HTML element.
+        """
         if self.element.type == "checkbox":
             return self.element.checked
 
@@ -137,6 +166,9 @@ class ArgInput(object):
 
     @value.setter
     def value(self, new_val):
+        """
+        Property to set value of the HTML element.
+        """
         if self.element.type == "checkbox":
             self.element.checked = new_val
         else:
