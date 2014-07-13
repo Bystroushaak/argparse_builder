@@ -71,10 +71,11 @@ def action_on_change_event(self, ev):
 
 class ArgInput(object):
     def __init__(self, element, parent):
-        self.parent = parent
         self.ID = element.id.split("_")[0]
         self.name = element.id.split("_")[-1]
-        self.element = element
+
+        self.parent = parent
+        self.element = element  # reference to html object
 
         if self.element.value == "":
             self.element.value = self.element.title
@@ -105,7 +106,7 @@ class ArgInput(object):
             ev.target.value = ev.target.title
 
     @property
-    def value(self):
+    def wrapped_value(self):
         # selects
         if not self.is_text_type and \
            self.element.value == self.element._default:
@@ -120,14 +121,15 @@ class ArgInput(object):
             return value
 
         if self.element.value != self.element.title:
-            if self.element._non_str:
+            if self.element._non_str.strip():
                 return self.element.value
 
             return '"' + self.element.value + '"'  # TODO: long lines / mutiple lines
 
         return None
 
-    def get_raw_value(self):
+    @property
+    def value(self):
         if self.element.type == "checkbox":
             return self.element.checked
 
@@ -142,21 +144,41 @@ class ArgInput(object):
 
     @property
     def is_text_type(self):
-        return self.element.type == "text" or self.element.nodeName == "TEXTAREA"
+        """
+        Getter showing whether the ArgInput object wraps text element or
+        switch/checkbox.
+        """
+        return self.element.type == "text" or \
+               self.element.nodeName == "TEXTAREA"
 
     @property
     def disabled(self):
+        """
+        Abstration over disabled property.
+        """
         return self.element.disabled
 
     @disabled.setter
     def disabled(self, val):
+        """
+        Setteer for diabled property.
+        """
         self.element.disabled = val
 
     def switch(self, inp2):
+        """
+        Switch two ArgInput objects.
+
+        Switch values, if the objects are of the same type, or whole HTML
+        elements, if they are different types.
+
+        Args:
+            inp2 (object): :class:`ArgInput` class.
+        """
         inp1 = self
 
         if inp1.element.nodeName != inp2.element.nodeName:
-            val1, val2 = inp1.get_raw_value(), inp2.get_raw_value()
+            val1, val2 = inp1.value, inp2.value
             inp1.element.id, inp2.element.id = inp2.element.id, inp1.element.id
             inp1.element.outerHTML, inp2.element.outerHTML = (
                 inp2.element.outerHTML,
@@ -166,13 +188,13 @@ class ArgInput(object):
             inp2.element = doc[inp2.ID + "_argument_" + inp2.name]
             inp1.value, inp2.value = val2, val1
         else:
-            inp1.value, inp2.value = inp2.get_raw_value(), inp1.get_raw_value()
+            inp1.value, inp2.value = inp2.value, inp1.value
 
     def __str__(self):
         if self.element._non_key:
-            return str(self.value)
+            return str(self.wrapped_value)
 
-        return self.name + "=" + str(self.value)
+        return self.name + "=" + str(self.wrapped_value)
 
 
 class Argument(object):
@@ -223,7 +245,7 @@ class Argument(object):
         vals = map(
             lambda x: str(x),
             filter(
-                lambda x: x.value is not None,
+                lambda x: x.wrapped_value is not None,
                 self.inputs.values()
             )
         )
@@ -349,8 +371,9 @@ class ArgParser(object):
         # read value of all inputs in this object
         vals = map(
             lambda x: str(x),
+            # pick only inputs with value
             filter(
-                lambda x: x.value is not None,  # pick only inputs with value
+                lambda x: x.wrapped_value is not None,
                 self.inputs.values()
             )
         )
@@ -375,7 +398,7 @@ class ArgParser(object):
 # Main program ================================================================
 a = ArgParser()
 
-def set_txt(ev=None):
+def parse_arguments(ev=None):
     doc["output"].value = a.__str__()
 
-doc["output"].bind("click", set_txt)
+doc["output"].bind("click", parse_arguments)
