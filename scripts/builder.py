@@ -79,6 +79,26 @@ def action_on_change_event(self, ev):
 
 
 class ArgInput(object):
+    """
+    This class is used to wrap <input>, <select> and <textarea> HTML elements.
+
+    It provides unified setters and getters for those elements, allows to
+    define callbacks when clicked/changed, switch two :class:`ArgInput` objects,
+    serialize them to string, enable/disable them and so on.
+
+    Attr:
+        ID (str): Unique ID. Thanks to this, objects know which HTML elements
+                  belong to them.
+        name (str): Name of the argparse argument - `descr`, `type` and so on.
+        parent (str): Pointer to :class:`Argument`, where this object is stored.
+                      This can be usedd to disable other inputs and so on.
+        element (obj): Pointer to HTML element.
+        is_text_type (bool): True for inputs/textareas, false for select,
+                             checkboxes and others.
+        wrapped_value (str): Value used when element is serialized to python.
+        value (str): Clean value of the element.
+        disabled (bool): Property which allows to enable/disable HTML element.
+    """
     def __init__(self, element, parent):
         self.ID = element.id.split("_")[0]
         self.name = element.id.split("_")[-1]
@@ -240,6 +260,21 @@ class ArgInput(object):
 
 
 class Argument(object):
+    """
+    This object is used to represent sets of :class:`ArgInput` objects, in order
+    as they are defined in <span> with ID `arguments`.
+
+    It can also :func:`remove` itself from the HTML page and serialize content
+    of the inputs to python code.
+
+    Attr:
+        ID (str): Unique ID. Thanks to this, objects know which HTML elements
+                  belong to them.
+        element (obj): Pointer to corresponding HTML table with inputs.
+        inputs (ordered dict): Dictionary with HTML inputs stored in format
+               ``{"$NAME": el_reference}`` where ``$NAME`` is last part of
+               HTML `id` splitted by ``_``.
+    """
     def __init__(self):
         self.ID = str(get_id_from_pool())
         self.element = self._add_html_repr()
@@ -302,6 +337,15 @@ class Argument(object):
 
 
 class ArgParser(object):
+    """
+    This object holds references to all argument tables and global argparse
+    settings.
+
+    Attr:
+        arguments (ordered dict): References to :class:`Argument` objects.
+        element (obj): Reference to `argument_parser` <span>.
+        inputs (ordered dict): Reference to global settings inputs.
+    """
     def __init__(self):
         self.arguments = OrderedDict()
         self.add_argument_callback()
