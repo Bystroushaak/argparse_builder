@@ -23,7 +23,8 @@ args = parser.parse_args()
 
 ARG_TEMPLATE = """parser.add_argument(
     $parameters
-)"""
+)
+"""
 
 
 # Functions & objects =========================================================
@@ -150,7 +151,16 @@ class ArgInput(object):
             if self.element._non_str.strip():
                 return self.element.value
 
-            return '"' + self.element.value + '"'  # TODO: long lines / mutiple lines
+            val = self.element.value.replace(r"\\", r"\\")  # don't even ask
+
+            quote = '"'
+            if "\n" in val:
+                quote = quote * 3
+
+            if quote in val:
+                val = val.replace(quote, quote.replace('"', '\\"'))
+
+            return quote + val + quote
 
         return None
 
@@ -287,7 +297,7 @@ class Argument(object):
 
         return ARG_TEMPLATE.replace(
             "$parameters",
-            "\t" + "\n\t".join(vals)
+            "\n\t".join(vals)
         )
 
 
