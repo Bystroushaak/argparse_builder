@@ -152,6 +152,9 @@ class ArgInput(object):
         This is used for string serialization - some of the elements needs to
         add quotes, some have default values and so on.
         """
+        if self.disabled:
+            return None
+
         # selects
         if not self.is_text_type and \
            self.element.value == self.element._default:
