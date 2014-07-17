@@ -108,3 +108,7 @@ table {
 #output {
     min-height: 40em;
 }
+
+q {
+    margin-left: -0.5em;
+}
