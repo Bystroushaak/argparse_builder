@@ -22,7 +22,7 @@ args = parser.parse_args()
 """
 
 ARG_TEMPLATE = """parser.add_argument(
-    $parameters
+\t$parameters
 )
 """
 
@@ -297,7 +297,7 @@ class Argument(object):
 
         return ARG_TEMPLATE.replace(
             "$parameters",
-            "\n\t".join(vals)
+            ",\n\t".join(vals)
         )
 
 
@@ -423,7 +423,7 @@ class ArgParser(object):
         # add \n\t only if there are used inputs
         inp_string = "\n\t".join(vals)
         if inp_string:
-            inp_string = "\n\t" + inp_string + "\n"
+            inp_string = ",\n\t" + inp_string + "\n"
 
         # put inputs to template
         out = ARG_PARSER_TEMPLATE.replace("$parameters", inp_string)
@@ -441,6 +441,12 @@ class ArgParser(object):
 a = ArgParser()
 
 def parse_arguments(ev=None):
-    doc["output"].value = a.__str__()
+    text = a.__str__()
+
+    if doc["output_use_spaces"].checked:
+        text = text.replace("\t", "    ")
+
+    doc["output"].value = text
 
 doc["output"].bind("click", parse_arguments)
+doc["output_use_spaces"].bind("click", parse_arguments)
