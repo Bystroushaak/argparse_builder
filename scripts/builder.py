@@ -135,6 +135,7 @@ class ArgInput(object):
         ID (str): Unique ID. Thanks to this, objects know which HTML elements
                   belong to them.
         name (str): Name of the argparse argument - `descr`, `type` and so on.
+        color (str): Default color for input text.
         parent (str): Pointer to :class:`Argument`, where this object is stored.
                       This can be usedd to disable other inputs and so on.
         element (obj): Pointer to HTML element.
@@ -147,12 +148,14 @@ class ArgInput(object):
     def __init__(self, element, parent):
         self.ID = element.id.split("_")[0]
         self.name = element.id.split("_")[-1]
+        self.color = "gray"
 
         self.parent = parent
         self.element = element  # reference to html object
 
         if self.element.value == "":
             self.element.value = self.element.title
+            self.element.style.color = self.color
 
         if self.is_text_type:
             element.bind("focus", self.input_remove_help_callback)
@@ -180,6 +183,7 @@ class ArgInput(object):
         """
         if ev.target.value == ev.target.title:
             ev.target.value = ""
+            ev.target.style.color = "black"
 
     def input_add_help_callback(self, ev):
         """
@@ -188,6 +192,7 @@ class ArgInput(object):
         """
         if ev.target.value == "":
             ev.target.value = ev.target.title
+            ev.target.style.color = self.color
 
     @property
     def wrapped_value(self):
