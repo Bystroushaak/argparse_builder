@@ -28,6 +28,36 @@ ARG_TEMPLATE = """parser.add_argument(
 
 
 # Functions & objects =========================================================
+def hide_help_frame(ev):
+    doc["help_placeholder"].innerHTML = ""
+    doc["black_overlay"].style.display = "none"
+
+
+def show_help_frame(ev):
+    src = '<iframe id="white_content" src="' + ev.target.fhref + '"></iframe>'
+
+    doc["help_placeholder"].innerHTML = src
+    doc["black_overlay"].style.display = "inline"
+    doc["white_content"].style.display = "inline"
+
+
+def bind_links(container):
+    # bind all links to show popup with help
+    for el in container.get(selector="a"):
+        el.fhref = el.href
+        el.href = "#"
+        el.bind("click", show_help_frame)
+
+
+def parse_arguments(ev):
+    text = a.__str__()
+
+    if doc["output_use_spaces"].checked:
+        text = text.replace("\t", "    ")
+
+    doc["output"].value = text
+
+
 def get_id_from_pool():
     """
     Returns:
@@ -293,6 +323,8 @@ class Argument(object):
             )
         )
 
+        bind_links(self.element)
+
     def _add_html_repr(self):
         """
         Add HTML representation of the argument to the HTML page.
@@ -487,13 +519,8 @@ class ArgParser(object):
 # Main program ================================================================
 a = ArgParser()
 
-def parse_arguments(ev=None):
-    text = a.__str__()
-
-    if doc["output_use_spaces"].checked:
-        text = text.replace("\t", "    ")
-
-    doc["output"].value = text
-
 doc["output"].bind("click", parse_arguments)
 doc["output_use_spaces"].bind("click", parse_arguments)
+
+doc["black_overlay"].bind("click", hide_help_frame)
+bind_links(doc["argument_parser"])
