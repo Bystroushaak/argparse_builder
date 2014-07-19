@@ -29,11 +29,17 @@ ARG_TEMPLATE = """parser.add_argument(
 
 # Functions & objects =========================================================
 def hide_help_frame(ev):
+    """
+    Remove help popup from the HTML.
+    """
     doc["help_placeholder"].innerHTML = ""
     doc["black_overlay"].style.display = "none"
 
 
 def show_help_frame(ev):
+    """
+    Add help popup to the HTML.
+    """
     src = '<iframe id="white_content" src="' + ev.target.fhref + '"></iframe>'
 
     doc["help_placeholder"].innerHTML = src
@@ -42,6 +48,12 @@ def show_help_frame(ev):
 
 
 def bind_links(container):
+    """
+    Bind all links in given `container` to popup help/iframe.
+
+    Note:
+        This function can be called only once for each link, or it wouln't work.
+    """
     # bind all links to show popup with help
     for el in container.get(selector="a"):
         el.fhref = el.href
@@ -50,6 +62,9 @@ def bind_links(container):
 
 
 def parse_arguments(ev):
+    """
+    Parse arguments from inputs and save the result to the output textarea.
+    """
     text = a.__str__()
 
     if doc["output_use_spaces"].checked:
@@ -519,8 +534,10 @@ class ArgParser(object):
 # Main program ================================================================
 a = ArgParser()
 
+# bind click on output textarea with generation of the source code
 doc["output"].bind("click", parse_arguments)
 doc["output_use_spaces"].bind("click", parse_arguments)
 
+# bind links with popup help
 doc["black_overlay"].bind("click", hide_help_frame)
 bind_links(doc["argument_parser"])
