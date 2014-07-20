@@ -292,18 +292,20 @@ class ArgInput(object):
         """
         inp1 = self
 
+        el1, el2 = inp1.element, inp2.element
+        el1.style.color, el2.style.color = el2.style.color, el1.style.color
+
         if inp1.element.nodeName != inp2.element.nodeName:
             val1, val2 = inp1.value, inp2.value
-            inp1.element.id, inp2.element.id = inp2.element.id, inp1.element.id
-            inp1.element.outerHTML, inp2.element.outerHTML = (
-                inp2.element.outerHTML,
-                inp1.element.outerHTML
-            )
+            el1.id, el2.id = el2.id, el2.id
+            el1.outerHTML, el2.outerHTML = el2.outerHTML, el2.outerHTML
+
             inp1.element = doc[inp1.ID + "_argument_" + inp1.name]
             inp2.element = doc[inp2.ID + "_argument_" + inp2.name]
             inp1.value, inp2.value = val2, val1
         else:
             inp1.value, inp2.value = inp2.value, inp1.value
+
 
     def __str__(self):
         if self.element._non_key:
