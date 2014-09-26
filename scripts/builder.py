@@ -11,6 +11,7 @@ from collections import OrderedDict
 
 # Variables ===================================================================
 _ARG_COUNTER = range(100000).__iter__()  # argument table ID pool
+MAX_LINELEN = 79
 
 ARG_PARSER_TEMPLATE = """import argparse
 
@@ -123,6 +124,38 @@ def action_on_change_event(self, ev):
         item.disabled = disabled
 
 
+def double_wrap(text, first_wrap, other_wraps=80):
+    """
+    Wrap `text` after `first_wrap` chars and then every `other_wraps`
+    characters.
+
+    Args:
+        text (str): Text which will be wrapped.
+        first_wrap (int): Perform first wrap after `first_wrap` characters.
+        other_wraps (int): Wrap other lines after `other_wraps` characters.
+
+    Returns:
+        list: List of strings wrapped after `first_wrap` and `other_wraps`.
+    """
+    out = []
+
+    if len(text) <= first_wrap:
+        return text
+
+    # first wrap
+    out.append(text[:first_wrap])
+    text = text[first_wrap:]
+
+    # other wraps
+    while len(text) > other_wraps:
+        out.append(text[:other_wraps])
+        text = text[other_wraps:]
+
+    return out + [text]
+
+
+
+# Object definitions ==========================================================
 class ArgInput(object):
     """
     This class is used to wrap <input>, <select> and <textarea> HTML elements.
@@ -226,12 +259,26 @@ class ArgInput(object):
 
             val = self.element.value.replace(r"\\", r"\\")  # don't even ask
 
+            # use """ for multiline strings
             quote = '"'
-            if "\n" in val:
+            indentation = len((4 * " ") + self.name + "=" + quote + quote)
+            if "\n" in val or len(val) >= MAX_LINELEN - indentation:
                 quote = quote * 3
 
+            # escape quotes in string
             if quote in val:
                 val = val.replace(quote, quote.replace('"', '\\"'))
+
+            # wrap long lines
+            indentation = len((4 * " ") + self.name + "=" + quote + quote)
+            if len(val) >= MAX_LINELEN - indentation:
+                val = "\\\n".join(
+                    double_wrap(
+                        val,
+                        MAX_LINELEN - indentation,
+                        MAX_LINELEN - len(quote)
+                    )
+                )
 
             return quote + val + quote
 
@@ -305,7 +352,6 @@ class ArgInput(object):
             inp1.value, inp2.value = val2, val1
         else:
             inp1.value, inp2.value = inp2.value, inp1.value
-
 
     def __str__(self):
         if self.element._non_key:
