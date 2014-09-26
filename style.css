@@ -1,288 +1,140 @@
-/* General styles */
-html {
-    background-color: #EAF2F5;
+html{
+    background-color: #CCCCCC;
 }
 
 body {
-    margin: 0px;
-    padding: 0px;
-
-    color: #0F0F0D;
-
-    font-family: 'Open Sans', sans-serif;
-}
-
-tt {
-    font-family: Consolas, "Liberation Mono", Courier, monospace;
-}
-
-a {
-    color: #006699;
-}
-
-label {
-    display: inline-block;
-    margin-bottom: 5px;
-
-    font-weight: 700;
-}
-
-input[type=text] {
     display: block;
+    margin: 0 auto;
 
-    height: 34px;
-    padding: 6px 12px;
+    margin-top: 1em;
+    margin-bottom: 1em;
 
-    font-size: 13px;
+    width: 57em; /* ~900px */
+    padding: 1em;
+    background-color: #FFFFFF;
+    
+    border: 1px solid black;
+    text-align: justify;
 }
 
-select {
-    display: block;
-
-    color: gray;
-
-    height: 34px;
-    padding: 6px 12px;
-
-    font-size: 13px;
-    line-height: 34px;
-
-    background-color: #FFF;
-
-    -webkit-appearance: menulist-button;
+h1 a, h2 a, h3 a {
+    text-decoration: none;
+    color: black;
 }
 
-textarea {
-    display: block;
-
-    height: 49px;
-    padding: 6px 12px;
-
-    font-size: 13px;
+h1 a:hover, h2 a:hover, h3 a:hover {
+    text-decoration: underline;
 }
 
-/* Styles for the header */
-header {
+.perex {
+    font-style: italic;
+}
+
+fieldset p {
+    font-style: italic;
+    margin: 0;
+}
+
+fieldset {
+    border: 0;
+}
+
+fieldset legend {
+    font-weight: bold;
+    font-family: monospace;
+}
+
+fieldset textarea {
     width: 100%;
-    height: 250px;
-    background-color: #2BB9E4;/*#DCE9EE;*/
+}
 
-    display: table;
-    position: relative;
+fieldset input {
+    width: 100%;
+}
 
+fieldset p input {
+    width: auto;
+}
+
+.buttons {
+    width: 0.8em;
+    font-size: 3em;
+
+    margin: 0;
+    padding: 0;
+
+    line-height: 0.8em;
     text-align: center;
 }
 
-    header .shadow {
-        height: 5px;
-        width: 100%;
-        background-color: #FF4D67; /*#B1BDC2;*/
-
-        position: absolute;
-        left: 0px;
-        bottom: -5px;
-    }
-
-    header .container {
-        display: table-cell;
-        vertical-align: middle
-    }
-
-    header h1, header h2 {
-        color: #F3F3F3;/*#006699;*/
-    }
-
-    header h2 {
-        font-weight: lighter;
-    }
-
-/* Styles for the main content of the page */
-.intro {
-    text-align: center;
-    font-weight: lighter;
-
-    padding-top: 50px;
-    padding-bottom: 50px;
-    padding-left: 50px;
-    padding-right: 50px;
+.remove_button {
+    padding: 0;
+    margin: 0.1em;
 }
 
-    .intro a {
-        color: #0F0F0D;
-    }
-
-.main-content {
-    padding-left: 60px;
-    padding-right: 60px;
+.argument {
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
-/* div based CSS tables */
-div .row {
-    width: 90%;
-    padding: 10px 5%;
-
-    min-height: 50px;
+.argument_table {
+    border: 1px solid lightgray;
+    margin-bottom: 1em;
 }
 
-    div .half {
-        float: left;
-        width: 50%;
-
-        min-height: 50px;
-    }
-
-    div .third {
-        float: left;
-        width: 33.3%;
-
-        min-height: 50px;
-    }
-
-/* Styles for the main argparse table */
-.main-table input[type=text], .main-table textarea, select {
-    width: calc(100% - 30px);
-
-    margin-left: 10px;
+.argument_table input[type="button"] {
+    height: 2.9em;
+    font-weight: bold;
 }
 
-/* Styles for the Argument area */
 #argument_template {
     display: none;
 }
 
-/* Styles for the toolbar in each argument area */
-.toolbar {
-    height: 34px;
+textarea {
     width: 100%;
 }
 
-    .toolbar .tool {
-        height: 34px;
-        width: 34px;
-
-        font-size: 16px;
-    }
-
-    .toolbar .delete {
-        float: right;
-    }
-
-/* Styles for the output area */
-.terminal {
-    width: 650px;
-    margin: 20px auto 0;
-
-    font-size: 14px;
-
-    -webkit-border-top-left-radius: 7px;
-    -webkit-border-top-right-radius: 7px;
-       -moz-border-top-left-radius: 7px;
-       -moz-border-top-right-radius: 7px;
-            border-top-left-radius: 7px;
-            border-top-right-radius: 7px;
-
-    -webkit-box-shadow: 0px 10px 50px 3px rgba(0, 0, 0, 0.35);
-       -moz-box-shadow: 0px 10px 50px 3px rgba(0, 0, 0, 0.35);
-            box-shadow: 0px 10px 50px 3px rgba(0, 0, 0, 0.35);
+table {
+    width: 100%;
 }
 
-.terminal-bar {
-    height: 20px;
-    background: #eeeeee;
-    position: relative;
-
-    -webkit-border-top-left-radius: 7px;
-    -webkit-border-top-right-radius: 7px;
-       -moz-border-top-left-radius: 7px;
-       -moz-border-top-right-radius: 7px;
-            border-top-left-radius: 7px;
-            border-top-right-radius: 7px;
+.descr {
+    float: left;
+    width: 30%;
+    font-family: monospace;
 }
 
-.terminal-bar li {
-    list-style: none;
+#output {
+    min-height: 40em;
 }
 
-.terminal-bar .terminal-close {
-    background: #FF504D;
-    left: 10px;
+q {
+    margin-left: -0.5em;
 }
 
-.terminal-bar .terminal-minimize {
-    background: #E8C460;
-    left: 25px;
-}
-
-.terminal-bar .terminal-maximize {
-    background: #70FF6E;
-    left: 40px;
-}
-
-.terminal-text {
-    min-height: 230px;
-    border: 1px solid #EEEEEE;
-    background-color: #3B3B3D;
-}
-
-.terminal-text pre {
-    margin: 5px;
-    border: 0px;
-    padding: 5px;
-
-    color: #FBFBFB;
-    font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-}
-
-.circle {
-    top: 5px;
-    width: 10px;
-    height: 10px;
+#black_overlay{
+    display: none;
     position: absolute;
-
-    -webkit-border-radius: 50%;
-       -moz-border-radius: 50%;
-            border-radius: 50%;
-}
-
-/* Styles for the footer */
-
-footer {
+    top: 0%;
+    left: 0%;
     width: 100%;
-    height: 18px;
-
-    position: relative;
-
-    text-align: center;
-
-    color: #F9F9F9;
-    font-weight: lighter;
-
-    margin-top: 40px;
-    padding-top: 33px;
-    padding-bottom: 33px;
-
-    background-color: #000000;
-
+    height: 200%;
+    background-color: black;
+    z-index:1001;
+    -moz-opacity: 0.8;
+    opacity:.80;
+    filter: alpha(opacity=80);
 }
-
-    footer a {
-        color: #F9F9F9;
-    }
-
-    footer img {
-        position: absolute;
-        top: 13px;
-
-        width: 58px;
-        height: 58px;
-
-        border-radius: 29px;
-    }
-
-    footer .left {
-        left: 25px;
-    }
-
-    footer .right {
-        right: 25px;
-    }
+#white_content {
+    display: none;
+    position: absolute;
+    top: 10%;
+    left: 15%;
+    width: 70%;
+    height: 80%;
+    border: 1px solid orange;
+    z-index:1002;
+    overflow: auto;
+    background-color: white;
+}

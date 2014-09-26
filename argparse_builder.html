@@ -1,181 +1,179 @@
 <HTML>
-    <head>
-        <title>Argparse builder</title>
-        <link rel="stylesheet" type="text/css" href="style.css">
+<head>
+    <title>Argparse builder</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="./brython_dist.js"></script>
+    <script type="text/python3" src="./scripts/builder.py"></script>
+</head>
+<body onload="brython(1)">
 
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<h1><code>argparse</code> builder</h1>
 
-        <script src="./brython_dist.js"></script>
-        <script type="text/python3" src="./scripts/builder.py"></script>
-    </head>
+<p class="perex">
+    Python 2.7 <code><a href="https://docs.python.org/2.7/library/argparse.html">argparse</a></code> builder (see <a href="https://github.com/Bystroushaak/argparse_builder">github for sources</a>).
 
-    <body onload="brython(1)">
-    <a href="https://github.com/Bystroushaak/argparse_builder"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    This webpage helps you to quickly create complex <code>argparse</code> interfaces.
+    Active <a href="./scripts/builder.py">parts</a> of this tool are written in <a href="http://brython.info">brython</a> (python dialect for the web browsers).
+</p>
 
-        <header>
-            <div class="container">
-                <h1><tt>argparse</tt> Builder</h1>
-                <h2>Quickly create complex <tt>argparse</tt> interfaces</h2>
-            </div>
+<h2>ArgumentParser object</h2>
 
-            <div class="shadow">
-            </div>
-        </header>
+<span id="argument_parser">
+<fieldset>
+    <legend><a href="https://docs.python.org/2.7/library/argparse.html#prog">prog</a></legend>
+    <input type="text" id="ArgumentParser_prog" title="The name of the program. Default sys.argv[0]." _non_str="" _non_key="" _default="">
+</fieldset>
 
-        <div class="main-content">
-            <h3 class="intro">Python 2.7 <code><a href="https://docs.python.org/2.7/library/argparse.html">argparse</a></code> builder. This webpage helps you to quickly create complex <code>argparse</code> interfaces. Active <a href="./scripts/builder.py">parts</a> of this tool are written in <a href="http://brython.info">brython</a> (python dialect for the web browsers).</h3>
+<fieldset>
+    <legend><a href="https://docs.python.org/2.7/library/argparse.html#usage">usage</a></legend>
+    <input type="text" id="ArgumentParser_usage" title="The string describing the program usage (default: generated from arguments added to parser)." _non_str="" _non_key="" _default="">
+</fieldset>
 
-            <h2><tt>ArgumentParser</tt> object</h2>
+<fieldset>
+    <legend><a href="https://docs.python.org/2.7/library/argparse.html#description">description</a></legend>
+    <textarea id="ArgumentParser_description" title="Text to display before the argument help (default: None). It shouldn't be too long - don't mistake this with man page." _non_str="" _non_key="" _default=""></textarea>
+</fieldset>
 
-            <span id="argument_parser">
-                <div class="main-table">
-                    <div class="row">
-                        <div class="half">
-                            <label>Program Name</label>
-                            <input type="text" id="ArgumentParser_prog" placeholder="The name of the program. Default sys.argv[0]." _non_str="" _non_key="" _default="">
-                        </div>
-                        <div class="half">
-                            <label>Usage</label>
-                            <input type="text" id="ArgumentParser_usage" placeholder="Text describing usage (default: generated from arguments added to parser)." _non_str="" _non_key="" _default="">
-                        </div>
-                    </div>
+<fieldset>
+    <legend><a href="https://docs.python.org/2.7/library/argparse.html#epilog">epilog</a></legend>
+    <textarea id="ArgumentParser_epilog" title="Text to display after the argument help (default: None)." _non_str="" _non_key="" _default=""></textarea>
+</fieldset>
 
-                    <div class="row">
-                        <div class="half">
-                            <label>Description</label>
-                            <textarea id="ArgumentParser_description" placeholder="Text to display before the argument help (default: None). It shouldn't be too long - don't mistake this with man page." _non_str="" _non_key="" _default=""></textarea>
-                        </div>
-                        <div class="half">
-                            <label>Epilog</label>
-                            <textarea id="ArgumentParser_epilog" placeholder="Text to display after the argument help (default: None)." _non_str="" _non_key="" _default=""></textarea>
-                        </div>
-                    </div>
+<fieldset>
+    <legend><a href="https://docs.python.org/2.7/library/argparse.html#add-help">add_help</a></legend>
+    <p>
+        <input type="checkbox" checked="true" id="ArgumentParser_add_help" _non_str="true" _non_key="" _default="True">
+        Add a <code>-h</code>/<code>–help</code> option to the parser.
+    </p>
+</fieldset>
+</span>
 
-                    <div class="row">
-                        <div class="half">
-                        </div>
-                        <div class="half">
-                            <br>
-                            <input type="checkbox" checked="true" id="ArgumentParser_add_help" _non_str="true" _non_key="" _default="True"> Add a <tt>-h</tt>/<tt>–help</tt> option to the parser.
-                        </div>
-                    </div>
-                </div>
+<h2>Arguments</h2>
+
+<span id="arguments">
+<table class="argument_table" id="argument_template">
+ <tr>
+  <td class="buttons" id="$ID_argument_buttons">
+    <input id="$ID_argument_button_up" title="Move argument up" type="button" value="↑"><br />
+    <input id="$ID_argument_button_add" title="Add new argument" type="button" value="+"><br />
+    <input id="$ID_argument_button_down" title="Move argument down" type="button" value="↓" /><br />
+    <hr class="remove_button" />
+    <input id="$ID_argument_button_rm" title="Remove argument" type="button" value="✖">
+  </td>
+  <td class="argument">
+    <table>
+        <tr>
+            <td>
+                <span class="descr">
+                    <a href="https://docs.python.org/2.7/library/argparse.html#name-or-flags">flag</a>:
+                </span>
+                <q><input id="$ID_argument_flag" title="Short flag like -h." type="text" _non_str="" _non_key="true" _default=""></q>
+            </td>
+            <td>
+                <span class="descr">
+                    <a href="https://docs.python.org/2.7/library/argparse.html#name-or-flags">name</a>:
+                </span>
+                <q><input id="$ID_argument_name" title="Long flag like --help." type="text" _non_str="" _non_key="true" _default=""></q>
+            </td>
+            <td>
+                <span class="descr">
+                    <a href="https://docs.python.org/2.7/library/argparse.html#action">action</a>:
+                </span>
+                <select name="action" id="$ID_argument_action" _non_str="" _non_key="" _default="store">
+                    <option value="store" selected="selected">store</option>
+                    <option value="store_const">store_const</option>
+                    <option value="store_true">store_true</option>
+                    <option value="store_false">store_false</option>
+                    <option value="append_const">append_const</option>
+                    <option value="count">count</option>
+                    <option value="help">help</option>
+                    <option value="version">version</option>
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <span class="descr">
+                    <a href="https://docs.python.org/2.7/library/argparse.html#nargs">nargs</a>:
+                </span>
+                <input id="$ID_argument_nargs" title="N/?/*/+/argparse.REMAINDER" type="text" _non_str="true" _non_key="" _default="">
+            </td>
+            <td>
+                <span class="descr">
+                    <a href="https://docs.python.org/2.7/library/argparse.html#const">const</a>:
+                </span>
+                <input id="$ID_argument_const" title="Constant value for action." type="text" _non_str="true" _non_key="" _default="">
+            </td>
+            <td>
+                <span class="descr">
+                    <a href="https://docs.python.org/2.7/library/argparse.html#default">default</a>:
+                </span>
+                <input id="$ID_argument_default" title="Default value. Use quotes for string." type="text" _non_str="true" _non_key="" _default="">
+            </td>
+        </tr>
+
+        <tr>
+            <td><span class="descr">
+                <a href="https://docs.python.org/2.7/library/argparse.html#type">type</a>:
             </span>
-            <h2>Arguments</h2>
+                <select name="type" id="$ID_argument_type" _non_str="" _non_key="" _default="str">
+                    <option value="int">int</option>
+                    <option value="float">float</option>
+                    <option value="long">long</option>
+                    <option value="str" selected="selected">str</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </td>
+            <td>
+                <span class="descr">
+                    <a href="https://docs.python.org/2.7/library/argparse.html#choices">choices</a>:
+                </span>
+                <input id="$ID_argument_choices" title="A container of the allowable values for the argument." type="text" _non_str="true" _non_key="" _default="">
+            </td>
+            <td>
+                <span class="descr">
+                    <a href="https://docs.python.org/2.7/library/argparse.html#required">required</a>:
+                </span>
+                <input id="$ID_argument_required" type="checkbox" _non_str="true" _non_key="" _default="False">
+            </td>
+        </tr>
 
-            <span id="arguments">
-                <div class="argument_table main-table" id="argument_template">
-                    <div class="buttons toolbar row" id="$ID_argument_buttons">
-                        <button class="tool" id="$ID_argument_button_up">↑</button>
-                        <button class="tool" id="$ID_argument_button_add">+</button>
-                        <button class="tool" id="$ID_argument_button_down">↓</button>
-                        <button class="tool delete" id="$ID_argument_button_rm">✖</button>
-                    </div>
+        <tr>
+            <td>
+                <span class="descr">
+                    <a href="https://docs.python.org/2.7/library/argparse.html#metavar">metavar</a>:
+                </span>
+                <q><input id="$ID_argument_metavar" title="Specify alternative data example in help." type="text" _non_str="" _non_key="" _default=""></q>
+            </td>
+            <td>
+                <span class="descr">
+                    <a href="https://docs.python.org/2.7/library/argparse.html#dest">dest</a>:
+                </span>
+                <q><input id="$ID_argument_dest" title="Name of variable in parsed object." type="text" _non_str="" _non_key="" _default=""></q>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    <textarea id="$ID_argument_help" title="Help (a brief description of what the argument does)." _non_str="" _non_key="" _default=""></textarea>
+  </td>
+ </tr>
+</table>
+</span>
 
-                    <div class="row">
-                        <div class="third">
-                            <label>Flag</label>
-                            <input id="$ID_argument_flag" title="Short flag like -h." type="text" _non_str="" _non_key="true" _default="">
-                        </div>
-                        <div class="third">
-                            <label>Name</label>
-                            <input id="$ID_argument_name" title="Long flag like --help." type="text" _non_str="" _non_key="true" _default="">
-                        </div>
-                        <div class="third">
-                            <label>Action</label>
-                            <select name="action" id="$ID_argument_action" _non_str="" _non_key="" _default="store">
-                                <option value="store" selected="selected">store</option>
-                                <option value="store_const">store_const</option>
-                                <option value="store_true">store_true</option>
-                                <option value="store_false">store_false</option>
-                                <option value="append_const">append_const</option>
-                                <option value="count">count</option>
-                                <option value="help">help</option>
-                                <option value="version">version</option>
-                            </select>
-                        </div>
-                    </div>
+<h2>Output</h2>
 
-                    <div class="row">
-                        <div class="third">
-                            <label>Nargs</label>
-                            <input id="$ID_argument_nargs" title="N/?/*/+/argparse.REMAINDER" type="text" _non_str="true" _non_key="" _default="">
-                        </div>
-                        <div class="third">
-                            <label>Const</label>
-                            <input id="$ID_argument_const" title="Constant value for action." type="text" _non_str="true" _non_key="" _default="">
-                        </div>
-                        <div class="third">
-                            <label>Default</label>
-                            <input id="$ID_argument_default" title="Default value. Use quotes for string." type="text" _non_str="true" _non_key="" _default="">
-                        </div>
-                    </div>
+<p>
+    <input type="checkbox" checked="true" id="output_use_spaces">
+    Use spaces for indentation.
+</p>
 
-                    <div class="row">
-                        <div class="third">
-                            <label>Type</label>
-                            <select name="type" id="$ID_argument_type" _non_str="" _non_key="" _default="str">
-                                <option value="int">int</option>
-                                <option value="float">float</option>
-                                <option value="long">long</option>
-                                <option value="str" selected="selected">str</option>
-                                <option value="custom">Custom</option>
-                            </select>
-                        </div>
-                        <div class="third">
-                            <label>Choices</label>
-                            <input id="$ID_argument_choices" title="A container of the allowable values for the argument." type="text" _non_str="true" _non_key="" _default="">
-                        </div>
-                        <div class="third">
-                            <label>Metabar</label>
-                            <input id="$ID_argument_metavar" title="Specify alternative data example in help." type="text" _non_str="" _non_key="" _default="">
-                        </div>
-                    </div>
+<textarea id="output" title="Click here to get the output." href="https://docs.python.org/2.7/library/argparse.html#metavar">Click here to get output.</textarea>
 
-                    <div class="row">
-                        <div class="third">
-                            <label>Dest</label>
-                            <input id="$ID_argument_dest" title="Name of variable in parsed object." type="text" _non_str="" _non_key="" _default="">
-                        </div>
-                    </div>
+<div id="black_overlay"></div>
 
-                    <div class="row">
-                        <label>Help</label>
-                        <textarea id="$ID_argument_help" title="Help (a brief description of what the argument does)." _non_str="" _non_key="" _default=""></textarea>
-                    </div>
+<span id="help_placeholder"></span>
 
-                    <div class="row">
-                        <div class="third">
-                            <input id="$ID_argument_required" type="checkbox" _non_str="true" _non_key="" _default="False">Required argument
-                        </div>
-                    </div>
-
-                </div>
-            </span>
-
-            <h2>Output</h2>
-
-            <p>
-                <input type="checkbox" checked="true" id="output_use_spaces">
-                Use spaces for indentation.
-            </p>
-
-            <div class="terminal">
-                <div class="terminal-bar">
-                    <ul>
-                        <li><div class="circle terminal-close"></div></li>
-                        <li><div class="circle terminal-minimize"></div></li>
-                        <li><div class="circle terminal-maximize"></div></li>
-                    </ul>
-                </div>
-                <div class="terminal-text">
-                    <pre id="output" title="Click here to get the output.">Click here to get output.</pre>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-        <img class="left" src="http://www.gravatar.com/avatar/7e5a852de0aaee201f8aac2ae860211b">© 2014 <a href="https://github.com/Bystroushaak">Bystroushaak</a> - Design by <a href="https://github.com/maurodec">Mauro de Carvalho</a><img class="right" src="http://www.gravatar.com/avatar/7d3d63063f80cf5f344e344a0684fffd">
-        </footer>
-    </body>
+</body>
 </HTML>

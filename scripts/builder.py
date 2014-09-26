@@ -63,14 +63,14 @@ def bind_links(container):
 
 def parse_arguments(ev):
     """
-    Parse arguments from inputs and save the result to the output pre.
+    Parse arguments from inputs and save the result to the output textarea.
     """
     text = a.__str__()
 
     if doc["output_use_spaces"].checked:
         text = text.replace("\t", "    ")
 
-    doc["output"].innerHTML = text
+    doc["output"].value = text
 
 
 def get_id_from_pool():
@@ -353,7 +353,7 @@ class Argument(object):
         """
         template = doc["argument_template"].innerHTML
 
-        table = html.DIV(id=self.ID + "_argument", Class="argument_table main-table")
+        table = html.TABLE(id=self.ID + "_argument", Class="argument_table")
         table.html = template.replace("$ID", self.ID)
         doc["arguments"] <= table
 
