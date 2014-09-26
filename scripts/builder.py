@@ -522,9 +522,9 @@ class ArgParser(object):
         )
 
         # add \n\t only if there are used inputs
-        inp_string = "\n\t".join(vals)
+        inp_string = ",\n\t".join(vals)
         if inp_string:
-            inp_string = ",\n\t" + inp_string + "\n"
+            inp_string = "\n\t" + inp_string + "\n"
 
         # put inputs to template
         out = ARG_PARSER_TEMPLATE.replace("$parameters", inp_string)
