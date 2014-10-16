@@ -12,4 +12,4 @@ Demo
 
 Live demo can be found here:
 
-- http://kitakitsune.org/argparse_builder/argparse_builder.html
+- http://kitakitsune.org/argparse_builder/
