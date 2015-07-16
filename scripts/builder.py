@@ -117,7 +117,7 @@ def action_on_change_event(self, ev):
 
     # enable/disable other inputs
     disabled = (ev.target.value in bool_switches)
-    disabled_inputs = map(lambda x: self.parent.inputs[x], bool_disables)
+    disabled_inputs = [self.parent.inputs[x] for x in bool_disables]
 
     for item in disabled_inputs:
         item.disabled = disabled
@@ -383,7 +383,7 @@ class Argument(object):
         self.element = self._add_html_repr()
 
         arguments = self.element.get(selector="input")
-        arguments = list(filter(lambda x: x.type != "button", arguments))
+        arguments = [x for x in arguments if x.type != "button"]
         arguments += self.element.get(selector="select")
         arguments += self.element.get(selector="textarea")
 
@@ -554,15 +554,12 @@ class ArgParser(object):
             arg1.switch(arg2)
 
     def __str__(self):
-        # read value of all inputs in this object
-        vals = map(
-            lambda x: str(x),
-            # pick only inputs with value
-            filter(
-                lambda x: x.wrapped_value is not None,
-                self.inputs.values()
-            )
-        )
+        # read value of all inputs in this object, pick only inputs with value
+        vals = [
+            str(x)
+            for x in self.inputs.values()
+            if x.wrapped_value is not None
+        ]
 
         # add \n\t only if there are used inputs
         inp_string = ",\n\t".join(vals)
