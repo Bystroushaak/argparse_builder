@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-# Interpreter version: python 2.7
-#
 # Imports =====================================================================
 from browser import html
 from browser import document as doc
@@ -53,7 +51,8 @@ def bind_links(container):
     Bind all links in given `container` to popup help/iframe.
 
     Note:
-        This function can be called only once for each link, or it wouln't work.
+        This function can be called only once for each link, or it wouln't
+        work.
     """
     # bind all links to show popup with help
     for el in container.get(selector="a"):
@@ -154,23 +153,23 @@ def double_wrap(text, first_wrap, other_wraps=80):
     return out + [text]
 
 
-
 # Object definitions ==========================================================
 class ArgInput(object):
     """
     This class is used to wrap <input>, <select> and <textarea> HTML elements.
 
     It provides unified setters and getters for those elements, allows to
-    define callbacks when clicked/changed, switch two :class:`ArgInput` objects,
-    serialize them to string, enable/disable them and so on.
+    define callbacks when clicked/changed, switch two :class:`ArgInput`
+    objects, serialize them to string, enable/disable them and so on.
 
     Attr:
         ID (str): Unique ID. Thanks to this, objects know which HTML elements
                   belong to them.
         name (str): Name of the argparse argument - `descr`, `type` and so on.
         color (str): Default color for input text.
-        parent (str): Pointer to :class:`Argument`, where this object is stored.
-                      This can be usedd to disable other inputs and so on.
+        parent (str): Pointer to :class:`Argument`, where this object is
+                      stored. This can be used to disable other inputs and so
+                      on.
         element (obj): Pointer to HTML element.
         is_text_type (bool): True for inputs/textareas, false for select,
                              checkboxes and others.
@@ -310,8 +309,8 @@ class ArgInput(object):
         Getter showing whether the ArgInput object wraps text element or
         switch/checkbox.
         """
-        return self.element.type == "text" or \
-               self.element.nodeName == "TEXTAREA"
+        return (self.element.type == "text" or
+                self.element.nodeName == "TEXTAREA")
 
     @property
     def disabled(self):
@@ -359,11 +358,14 @@ class ArgInput(object):
 
         return self.name + "=" + str(self.wrapped_value)
 
+    def __hash__(self):
+        return hash(self.ID)
+
 
 class Argument(object):
     """
-    This object is used to represent sets of :class:`ArgInput` objects, in order
-    as they are defined in <span> with ID `arguments`.
+    This object is used to represent sets of :class:`ArgInput` objects, in
+    order as they are defined in <span> with ID `arguments`.
 
     It can also :func:`remove` itself from the HTML page and serialize content
     of the inputs to python code.
@@ -384,11 +386,10 @@ class Argument(object):
         arguments = list(filter(lambda x: x.type != "button", arguments))
         arguments += self.element.get(selector="select")
         arguments += self.element.get(selector="textarea")
+
         self.inputs = OrderedDict(
-            map(
-                lambda x: (x.id.split("_")[-1], ArgInput(x, self)),
-                sum(arguments, [])
-            )
+            (x.id.split("_")[-1], ArgInput(element=x, parent=self))
+            for x in sum(arguments, [])
         )
 
         bind_links(self.element)
@@ -422,15 +423,13 @@ class Argument(object):
 
     def __str__(self):
         # collect strings from all inputs
-        vals = map(
-            lambda x: str(x),
-            filter(
-                lambda x: x.wrapped_value is not None,
-                self.inputs.values()
-            )
-        )
+        vals = [
+            str(x)
+            for x in self.inputs.values()
+            if x.wrapped_value is not None
+        ]
 
-        if len(list(vals)) == 0:
+        if not vals:
             return ""
 
         return ARG_TEMPLATE.replace(
@@ -458,10 +457,8 @@ class ArgParser(object):
         arguments = self.element.get(selector="input")
         arguments += self.element.get(selector="textarea")
         self.inputs = OrderedDict(
-            map(
-                lambda x: (x.id.split("_")[-1], ArgInput(x, self)),
-                sum(arguments, [])
-            )
+            (x.id.split("_")[-1], ArgInput(element=x, parent=self))
+            for x in sum(arguments, [])
         )
 
     def new_argument(self):
