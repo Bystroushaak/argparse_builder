@@ -1,6 +1,8 @@
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Imports =====================================================================
+# Interpreter version: brython
+#
 from browser import html
 from browser import document as doc
 
@@ -384,12 +386,13 @@ class Argument(object):
 
         arguments = self.element.get(selector="input")
         arguments = [x for x in arguments if x.type != "button"]
-        arguments += self.element.get(selector="select")
-        arguments += self.element.get(selector="textarea")
+        arguments.extend(self.element.get(selector="select"))
+        arguments.extend(self.element.get(selector="textarea"))
 
         self.inputs = OrderedDict(
             (x.id.split("_")[-1], ArgInput(element=x, parent=self))
-            for x in sum(arguments, [])
+            for x in arguments
+            if x
         )
 
         bind_links(self.element)
@@ -455,10 +458,12 @@ class ArgParser(object):
         # parse all inputs belonging to the argparser objects
         self.element = doc["argument_parser"]
         arguments = self.element.get(selector="input")
-        arguments += self.element.get(selector="textarea")
+        arguments.extend(self.element.get(selector="textarea"))
+
         self.inputs = OrderedDict(
             (x.id.split("_")[-1], ArgInput(element=x, parent=self))
-            for x in sum(arguments, [])
+            for x in arguments
+            if x
         )
 
     def new_argument(self):
@@ -579,12 +584,13 @@ class ArgParser(object):
 
 
 # Main program ================================================================
-a = ArgParser()
+if __name__ == '__main__':
+    a = ArgParser()
 
-# bind click on output textarea with generation of the source code
-doc["output"].bind("click", parse_arguments)
-doc["output_use_spaces"].bind("click", parse_arguments)
+    # bind click on output textarea with generation of the source code
+    doc["output"].bind("click", parse_arguments)
+    doc["output_use_spaces"].bind("click", parse_arguments)
 
-# bind links with popup help
-doc["black_overlay"].bind("click", hide_help_frame)
-bind_links(doc["argument_parser"])
+    # bind links with popup help
+    doc["black_overlay"].bind("click", hide_help_frame)
+    bind_links(doc["argument_parser"])
