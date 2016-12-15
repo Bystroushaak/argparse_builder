@@ -391,8 +391,7 @@ class Argument(object):
 
         self.inputs = OrderedDict(
             (x.id.split("_")[-1], ArgInput(element=x, parent=self))
-            for x in arguments
-            if x
+            for x in arguments if x
         )
 
         bind_links(self.element)
@@ -457,13 +456,12 @@ class ArgParser(object):
 
         # parse all inputs belonging to the argparser objects
         self.element = doc["argument_parser"]
-        arguments = self.element.get(selector="input")
-        arguments.extend(self.element.get(selector="textarea"))
+        arguments = self.element.get(selector="input") or []
+        arguments.extend(self.element.get(selector="textarea") or [])
 
         self.inputs = OrderedDict(
             (x.id.split("_")[-1], ArgInput(element=x, parent=self))
-            for x in arguments
-            if x
+            for x in arguments if x
         )
 
     def new_argument(self):
