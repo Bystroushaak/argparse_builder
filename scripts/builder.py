@@ -594,3 +594,5 @@ if __name__ == '__main__':
     # bind links with popup help
     doc["black_overlay"].bind("click", hide_help_frame)
     bind_links(doc["argument_parser"])
+
+    doc["loading_gears_background"].style.display = "none"
