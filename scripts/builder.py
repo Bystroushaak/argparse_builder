@@ -3,10 +3,10 @@
 #
 # Interpreter version: brython
 #
+from collections import OrderedDict
+
 from browser import html
 from browser import document as doc
-
-from collections import OrderedDict
 
 
 # Variables ===================================================================
@@ -110,38 +110,8 @@ def action_on_change_event(self, ev):
         item.disabled = disabled
 
 
-def double_wrap(text, first_wrap, other_wraps=80):
-    """
-    Wrap `text` after `first_wrap` chars and then every `other_wraps`
-    characters.
-
-    Args:
-        text (str): Text which will be wrapped.
-        first_wrap (int): Perform first wrap after `first_wrap` characters.
-        other_wraps (int): Wrap other lines after `other_wraps` characters.
-
-    Returns:
-        list: List of strings wrapped after `first_wrap` and `other_wraps`.
-    """
-    out = []
-
-    if len(text) <= first_wrap:
-        return text
-
-    # first wrap
-    out.append(text[:first_wrap])
-    text = text[first_wrap:]
-
-    # other wraps
-    while len(text) > other_wraps:
-        out.append(text[:other_wraps])
-        text = text[other_wraps:]
-
-    return out + [text]
-
-
 # Object definitions ==========================================================
-class ArgInput(object):
+class ArgInput:
     """
     This class is used to wrap <input>, <select> and <textarea> HTML elements.
 
@@ -239,7 +209,6 @@ class ArgInput(object):
             return value
 
         # text elements - textearea/input
-        MAX_LINELEN = 79
         if self.element.value != self.element.title:
             # nargs are strings only in some special cases (+*?)
             if self.name == "nargs" and self.element.value in "+*?":
@@ -248,32 +217,71 @@ class ArgInput(object):
             if self.element._non_str.strip():
                 return self.element.value
 
-            val = self.element.value.replace(r"\\", r"\\")  # don't even ask
-
-            # use """ for multiline strings
-            quote = '"'
-            indentation = len((4 * " ") + self.name + "=" + quote + quote)
-            if "\n" in val or len(val) >= MAX_LINELEN - indentation:
-                quote = quote * 3
-
-            # escape quotes in string
-            if quote in val:
-                val = val.replace(quote, quote.replace('"', '\\"'))
-
-            # wrap long lines
-            indentation = len((4 * " ") + self.name + "=" + quote + quote)
-            if len(val) >= MAX_LINELEN - indentation:
-                val = "\\\n".join(
-                    double_wrap(
-                        val,
-                        MAX_LINELEN - indentation,
-                        MAX_LINELEN - len(quote)
-                    )
-                )
-
-            return quote + val + quote
+            return self._wrap_strings()
 
         return None
+
+    def _wrap_strings(self):
+        def wrap(text, first_wrap, other_wraps, other_indents, line_len=79):
+            """
+            Wrap `text` after `first_wrap` chars and then every `other_wraps`
+            characters.
+
+            Args:
+                text (str): Text which will be wrapped.
+                first_wrap (int): Perform first wrap after `first_wrap` 
+                    characters.
+                other_wraps (int): Wrap other lines after `other_wraps` 
+                    characters.
+
+            Returns:
+                list: List of strings wrapped after `first_wrap` and \
+                      `other_wraps`.
+            """
+            out = []
+
+            if len(text) <= line_len:
+                return text
+
+            # first wrap
+            out.append(text[:first_wrap])
+            text = text[first_wrap:]
+
+            # other wraps
+            while len(text) > other_wraps:
+                out.append(other_indents + text[:other_wraps])
+                text = text[other_wraps:]
+
+            return "\\\n".join(out + [other_indents + text])
+
+        val = self.element.value.replace(r"\\", r"\\")  # don't even ask
+
+        # use """ for multiline strings
+        quote = '"'
+        argument_len = len((4 * " ") + self.name + "=" + quote + val + quote)
+        MAX_LINELEN = 79
+        if "\n" in val or argument_len >= MAX_LINELEN:
+            quote = quote * 3
+
+        # escape quotes in string
+        if quote in val:
+            val = val.replace(quote, quote.replace('"', '\\"'))
+
+        # can fit to one line?
+        first_indentation = "    %s=%s" % (self.name, quote)
+        if len(first_indentation + val + quote) <= MAX_LINELEN:
+            return quote + val + quote
+
+        # wrap long lines
+        val = wrap(
+            text=quote + val,
+            first_wrap=MAX_LINELEN - len(first_indentation),
+            other_wraps=MAX_LINELEN - len(first_indentation),
+            other_indents=len(first_indentation) * " ",
+            line_len=MAX_LINELEN,
+        )
+        return val + quote
+
 
     @property
     def value(self):
@@ -354,7 +362,7 @@ class ArgInput(object):
         return hash(self.ID)
 
 
-class Argument(object):
+class Argument:
     """
     This object is used to represent sets of :class:`ArgInput` objects, in
     order as they are defined in <span> with ID `arguments`.
@@ -434,7 +442,7 @@ class Argument(object):
         )
 
 
-class ArgParser(object):
+class ArgParser:
     """
     This object holds references to all argument tables and global argparse
     settings.
