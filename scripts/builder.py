@@ -241,6 +241,10 @@ class ArgInput(object):
         # text elements - textearea/input
         MAX_LINELEN = 79
         if self.element.value != self.element.title:
+            # nargs are strings only in some special cases (+*?)
+            if self.name == "nargs" and self.element.value in "+*?":
+                return '"%s"' % self.element.value
+
             if self.element._non_str.strip():
                 return self.element.value
 
