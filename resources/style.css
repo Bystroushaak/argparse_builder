@@ -121,7 +121,7 @@ q {
     width: 100%;
     height: 200%;
     background-color: black;
-    z-index:1001;
+    z-index: 1001;
     -moz-opacity: 0.8;
     opacity:.80;
     filter: alpha(opacity=80);
@@ -135,7 +135,7 @@ q {
     width: 70%;
     height: 80%;
     border: 1px solid orange;
-    z-index:1002;
+    z-index: 1002;
     overflow: auto;
     background-color: white;
 }
