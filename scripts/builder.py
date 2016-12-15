@@ -11,21 +11,6 @@ from collections import OrderedDict
 
 # Variables ===================================================================
 _ARG_COUNTER = range(100000).__iter__()  # argument table ID pool
-MAX_LINELEN = 79
-
-ARG_PARSER_TEMPLATE = """import argparse
-
-# ...
-parser = argparse.ArgumentParser($parameters)
-$arguments
-args = parser.parse_args()
-
-"""
-
-ARG_TEMPLATE = """parser.add_argument(
-\t$parameters
-)
-"""
 
 
 # Functions & objects =========================================================
@@ -254,6 +239,7 @@ class ArgInput(object):
             return value
 
         # text elements - textearea/input
+        MAX_LINELEN = 79
         if self.element.value != self.element.title:
             if self.element._non_str.strip():
                 return self.element.value
@@ -434,6 +420,10 @@ class Argument(object):
         if not vals:
             return ""
 
+        ARG_TEMPLATE = """parser.add_argument(
+\t$parameters
+)
+"""
         return ARG_TEMPLATE.replace(
             "$parameters",
             ",\n\t".join(vals)
@@ -570,6 +560,14 @@ class ArgParser(object):
             inp_string = "\n\t" + inp_string + "\n"
 
         # put inputs to template
+        ARG_PARSER_TEMPLATE = """import argparse
+
+# ...
+parser = argparse.ArgumentParser($parameters)
+$arguments
+args = parser.parse_args()
+
+"""
         out = ARG_PARSER_TEMPLATE.replace("$parameters", inp_string)
 
         # convert arguments to strings
